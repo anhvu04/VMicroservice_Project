@@ -3,7 +3,9 @@ services:
   product-db:
     container_name: product-db
     environment:
-      MYSQL_ROOT_PASSWORD: "Anhvu2182004@"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    env_file:
+      - .env
     restart: always
     ports:
       - "3307:3306"
@@ -14,9 +16,11 @@ services:
   customer-db:
     container_name: customer-db
     environment:
-      POSTGRES_USER: "admin"
-      POSTGRES_PASSWORD: "Anhvu2182004@"
-      POSTGRES_DB: "DiscountDb"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - .env
     restart: always
     ports:
       - "5433:5432"
@@ -26,6 +30,10 @@ services:
   #basket-db
   basket-db:
     container_name: basket-db
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    env_file:
+      - .env
     restart: always
     ports:
       - "6380:6379"
@@ -34,8 +42,10 @@ services:
   order-db:
     container_name: order-db
     environment:
-      SA_PASSWORD: "Anhvu2182004@"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
       ACCEPT_EULA: "Y"
+    env_file:
+      - .env
     restart: always
     ports:
       - "1434:1433"
@@ -45,6 +55,11 @@ services:
   #inventory-db
   inventory-db:
     container_name: inventory-db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    env_file:
+      - .env
     restart: always
     ports:
       - "27018:27017"
@@ -54,47 +69,70 @@ services:
   #infrastructure section
   rabbitmq:
     container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    env_file:
+      - .env
     restart: always
     ports:
-      - "5673:5672"
-      - "15673:15672"
-        
+      - "5673:5672"     # RabbitMQ message broker port
+      - "15673:15672"   # RabbitMQ management UI port
+  
+  #pgadmin
   pgadmin:
     container_name: pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: "anhvu2182004@gmail.com"
-      PGADMIN_DEFAULT_PASSWORD: "admin12345"
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    env_file:
+      - .env
     restart: always
     ports:
       - "5051:80"
     volumes:
       - pgadmin-data:/root/.pgadmin
-        
+  
+  #portainer
   portainer:
     container_name: portainer
+    environment:
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    env_file:
+      - .env
     restart: always
     ports:
-      - "8081:8000"
-      - "9001:9000"
+      - "6767:8000"    #portainer port
+      - "6768:9000"    #portainer UI port
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer-data:/data
-        
+  
+  #elasticsearch
   elasticsearch:
     container_name: elasticsearch
     environment:
       - xpack.monitoring.enabled=true
       - xpack.watcher.enabled=false
       - discovery.type=single-node
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    env_file:
+      - .env
     ports:
       - "5778:9200"
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
   
+  #kibana
   kibana:
     container_name: kibana
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:5778
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
+    env_file:
+      - .env
     ports:
       - "5602:5601"
     depends_on:

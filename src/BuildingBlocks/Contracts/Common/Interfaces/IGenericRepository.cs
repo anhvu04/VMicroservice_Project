@@ -8,9 +8,11 @@ namespace Contracts.Common.Interfaces;
 public interface IGenericQueryRepository<TEntity, in TKey, TContext>
     where TEntity : EntityBase<TKey> where TContext : DbContext
 {
-    IQueryable<TEntity> FindAll(bool trackChanges = false, CancellationToken cancellationToken = default);
+    IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>>? predicate, bool trackChanges = false,
+        CancellationToken cancellationToken = default);
 
-    IQueryable<TEntity> FindAll(bool trackChanges = false, CancellationToken cancellationToken = default,
+    IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>>? predicate, bool trackChanges = false,
+        CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties);
 
     Task<TEntity?> FindByIdAsync(TKey id, bool trackChanges = false,
@@ -26,10 +28,10 @@ public interface IGenericQueryRepository<TEntity, in TKey, TContext>
         CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties);
 
-    Task<TEntity?> FindSingleAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
+    Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
         CancellationToken cancellationToken = default);
 
-    Task<TEntity?> FindSingleAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
+    Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
         CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties);
 }
@@ -37,15 +39,15 @@ public interface IGenericQueryRepository<TEntity, in TKey, TContext>
 public interface IGenericRepository<TEntity, in TKey, TContext> : IGenericQueryRepository<TEntity, TKey, TContext>
     where TEntity : EntityBase<TKey> where TContext : DbContext
 {
-    Task AddAsync(TEntity entity);
+    void Add(TEntity entity);
 
-    Task UpdateAsync(TEntity entity);
+    void Update(TEntity entity);
 
-    Task DeleteAsync(TEntity entity);
+    void Delete(TEntity entity);
 
-    Task AddRangeAsync(IEnumerable<TEntity> entities);
-    Task UpdateRangeAsync(IEnumerable<TEntity> entities);
-    Task DeleteRangeAsync(IEnumerable<TEntity> entities);
+    void AddRange(IEnumerable<TEntity> entities);
+    void UpdateRange(IEnumerable<TEntity> entities);
+    void DeleteRange(IEnumerable<TEntity> entities);
     Task<IDbContextTransaction> BeginTransactionAsync();
     Task EndTransactionAsync();
     Task RollbackTransactionAsync();

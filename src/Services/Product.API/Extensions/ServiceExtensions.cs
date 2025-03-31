@@ -1,3 +1,5 @@
+using Contracts.Common.Interfaces;
+using Infrastructure.Common.Implementation;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
@@ -14,6 +16,7 @@ public static class ServiceExtensions
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.ConfigureProductDbContext(configuration);
+        services.AddDependencyInjection();
     }
 
     private static void ConfigureProductDbContext(this IServiceCollection services, IConfiguration configuration)
@@ -26,5 +29,10 @@ public static class ServiceExtensions
                 e.MigrationsAssembly("Product.API");
                 e.SchemaBehavior(MySqlSchemaBehavior.Ignore);
             }));
+    }
+
+    private static void AddDependencyInjection(this IServiceCollection services)
+    {
+        services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
     }
 }

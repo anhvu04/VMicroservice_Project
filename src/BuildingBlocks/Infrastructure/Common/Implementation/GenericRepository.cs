@@ -9,98 +9,112 @@ namespace Infrastructure.Common.Implementation;
 public class GenericRepository<TEntity, TKey, TContext> : IGenericRepository<TEntity, TKey, TContext>
     where TEntity : EntityBase<TKey> where TContext : DbContext
 {
-    public IQueryable<TEntity> FindAll(bool trackChanges = false, CancellationToken cancellationToken = default)
+    private readonly TContext _context;
+    private readonly DbSet<TEntity> _dbSet;
+
+    public GenericRepository(TContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
+        _dbSet = context.Set<TEntity>();
     }
 
-    public IQueryable<TEntity> FindAll(bool trackChanges = false, CancellationToken cancellationToken = default,
+    public IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>>? predicate, bool trackChanges = false,
+        CancellationToken cancellationToken = default)
+    {
+        if (predicate != null) return trackChanges ? _dbSet.Where(predicate) : _dbSet.Where(predicate).AsNoTracking();
+        return trackChanges ? _dbSet.AsQueryable() : _dbSet.AsQueryable().AsNoTracking();
+    }
+
+    public IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>>? predicate, bool trackChanges = false,
+        CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties)
     {
-        throw new NotImplementedException();
+        var query = FindAll(predicate, trackChanges, cancellationToken);
+        return includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+    }
+
+    public async Task<TEntity?> FindByIdAsync(TKey id, bool trackChanges = false,
+        CancellationToken cancellationToken = default)
+    {
+        return await FindAll(x => x.Id!.Equals(id), trackChanges, cancellationToken)
+            .SingleOrDefaultAsync(cancellationToken);
     }
 
     public Task<TEntity?> FindByIdAsync(TKey id, bool trackChanges = false,
-        CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<TEntity?> FindByIdAsync(TKey id, bool trackChanges = false,
         CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties)
     {
-        throw new NotImplementedException();
+        return FindAll(x => x.Id!.Equals(id), trackChanges, cancellationToken, includeProperties)
+            .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public Task<bool> FindAnyAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
+    public async Task<bool> FindAnyAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return await FindAll(predicate, trackChanges, cancellationToken).AnyAsync(cancellationToken);
     }
 
-    public Task<bool> FindAnyAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
+    public async Task<bool> FindAnyAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
         CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties)
     {
-        throw new NotImplementedException();
+        return await FindAll(predicate, trackChanges, cancellationToken, includeProperties).AnyAsync(cancellationToken);
     }
 
-    public Task<TEntity?> FindSingleAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
+    public async Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>> predicate,
+        bool trackChanges = false,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return await FindAll(predicate, trackChanges, cancellationToken).SingleOrDefaultAsync(cancellationToken);
     }
 
-    public Task<TEntity?> FindSingleAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
+    public async Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>> predicate,
+        bool trackChanges = false,
         CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties)
     {
-        throw new NotImplementedException();
+        return await FindAll(predicate, trackChanges, cancellationToken, includeProperties)
+            .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public Task AddAsync(TEntity entity)
+    public void Add(TEntity entity)
     {
-        throw new NotImplementedException();
+        _dbSet.Add(entity);
     }
 
-    public Task UpdateAsync(TEntity entity)
+    public void Update(TEntity entity)
     {
-        throw new NotImplementedException();
+        _dbSet.Update(entity);
     }
 
-    public Task DeleteAsync(TEntity entity)
+    public void Delete(TEntity entity)
     {
-        throw new NotImplementedException();
+        _dbSet.Remove(entity);
     }
 
-    public Task AddRangeAsync(IEnumerable<TEntity> entities)
+    public void AddRange(IEnumerable<TEntity> entities)
     {
-        throw new NotImplementedException();
+        _dbSet.AddRange(entities);
     }
 
-    public Task UpdateRangeAsync(IEnumerable<TEntity> entities)
+    public void UpdateRange(IEnumerable<TEntity> entities)
     {
-        throw new NotImplementedException();
+        _dbSet.UpdateRange(entities);
     }
 
-    public Task DeleteRangeAsync(IEnumerable<TEntity> entities)
+    public void DeleteRange(IEnumerable<TEntity> entities)
     {
-        throw new NotImplementedException();
+        _dbSet.RemoveRange(entities);
     }
 
-    public Task<IDbContextTransaction> BeginTransactionAsync()
+    public Task<IDbContextTransaction> BeginTransactionAsync() => _context.Database.BeginTransactionAsync();
+
+
+    public async Task EndTransactionAsync()
     {
-        throw new NotImplementedException();
+        await _context.SaveChangesAsync();
+        await _context.Database.CommitTransactionAsync();
     }
 
-    public Task EndTransactionAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task RollbackTransactionAsync()
-    {
-        throw new NotImplementedException();
-    }
+    public Task RollbackTransactionAsync() => _context.Database.RollbackTransactionAsync();
 }

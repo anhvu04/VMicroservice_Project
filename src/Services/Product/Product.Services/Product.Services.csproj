@@ -6,10 +6,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Product.Repositories\Product.Repositories.csproj" />
+     <ItemGroup>
+        <ProjectReference Include="..\Product.Repositories\Product.Repositories.csproj" />
     </ItemGroup>
-
+    
     <ItemGroup>
       <Folder Include="Mapping\" />
     </ItemGroup>

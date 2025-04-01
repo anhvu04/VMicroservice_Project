@@ -1,4 +1,4 @@
-namespace WebHealthStatus;
+namespace WebHealthStatus.MVC;
 
 public class Program
 {

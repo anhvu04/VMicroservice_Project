@@ -1,4 +1,4 @@
-namespace WebHealthStatus.Models;
+namespace WebHealthStatus.MVC.Models;
 
 public class ErrorViewModel
 {

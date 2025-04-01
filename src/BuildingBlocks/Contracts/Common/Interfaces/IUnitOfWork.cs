@@ -1,4 +1,3 @@
-using Contracts.Domains;
 using Microsoft.EntityFrameworkCore;
 
 namespace Contracts.Common.Interfaces;

@@ -8,10 +8,10 @@ namespace Contracts.Common.Interfaces;
 public interface IGenericQueryRepository<TEntity, in TKey, TContext>
     where TEntity : EntityBase<TKey> where TContext : DbContext
 {
-    IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>>? predicate, bool trackChanges = false,
+    IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>>? predicate = null, bool trackChanges = false,
         CancellationToken cancellationToken = default);
 
-    IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>>? predicate, bool trackChanges = false,
+    IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>>? predicate = null, bool trackChanges = false,
         CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties);
 
@@ -21,17 +21,17 @@ public interface IGenericQueryRepository<TEntity, in TKey, TContext>
     Task<TEntity?> FindByIdAsync(TKey id, bool trackChanges = false, CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties);
 
-    Task<bool> FindAnyAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
+    Task<bool> FindAnyAsync(Expression<Func<TEntity, bool>>? predicate = null, bool trackChanges = false,
         CancellationToken cancellationToken = default);
 
-    Task<bool> FindAnyAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
+    Task<bool> FindAnyAsync(Expression<Func<TEntity, bool>>? predicate = null, bool trackChanges = false,
         CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties);
 
-    Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
+    Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>>? predicate = null, bool trackChanges = false,
         CancellationToken cancellationToken = default);
 
-    Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
+    Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>>? predicate = null, bool trackChanges = false,
         CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties);
 }

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Contracts.Domains;
 
-namespace Product.API.Entities;
+namespace Product.Repositories.Entities;
 
 public class CatalogProduct : EntityAuditBase<Guid>
 {

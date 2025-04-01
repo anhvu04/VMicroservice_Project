@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Product.API.Persistence;
+using Product.Repositories.Persistence;
 
 namespace Product.API.Extensions;
 

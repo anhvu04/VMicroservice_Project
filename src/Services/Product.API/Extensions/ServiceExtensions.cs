@@ -3,7 +3,10 @@ using Infrastructure.Common.Implementation;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using Product.API.Persistence;
+using Product.Repositories.Persistence;
+using Product.Repositories.UnitOfWork;
+using Product.Services.Services.Implementation;
+using Product.Services.Services.Interfaces;
 
 namespace Product.API.Extensions;
 
@@ -26,7 +29,7 @@ public static class ServiceExtensions
         services.AddDbContext<ProductContext>(options =>
             options.UseMySql(connectionString, ServerVersion.AutoDetect(builder.ConnectionString), e =>
             {
-                e.MigrationsAssembly("Product.API");
+                e.MigrationsAssembly("Product.Repositories");
                 e.SchemaBehavior(MySqlSchemaBehavior.Ignore);
             }));
     }
@@ -34,5 +37,7 @@ public static class ServiceExtensions
     private static void AddDependencyInjection(this IServiceCollection services)
     {
         services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+        services.AddScoped<IProductUnitOfWork, ProductUnitOfWork>();
+        services.AddScoped<ICatalogProductService, CatalogProductService>();
     }
 }

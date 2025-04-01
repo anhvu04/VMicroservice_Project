@@ -1,6 +1,6 @@
 using Common.Logging;
 using Product.API.Extensions;
-using Product.API.Persistence;
+using Product.Repositories.Persistence;
 using Serilog;
 
 namespace Product.API;

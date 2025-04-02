@@ -5,7 +5,8 @@ namespace Infrastructure.Mapping;
 
 public static class MapsterExtensions
 {
-    public static void IgnoreAllNonExisting<TSource, TDestination>(this TypeAdapterSetter<TSource, TDestination> setter)
+    public static TypeAdapterSetter<TSource, TDestination> IgnoreAllNonExisting<TSource, TDestination>(
+        this TypeAdapterSetter<TSource, TDestination> setter)
     {
         var destinationType = typeof(TDestination);
         var sourceType = typeof(TSource);
@@ -21,6 +22,8 @@ public static class MapsterExtensions
                 setter.Ignore(destProperty.Name);
             }
         }
+
+        return setter;
     }
 
     public static TypeAdapterSetter<TSource, TDestination> IgnoreNullProperties<TSource, TDestination>(

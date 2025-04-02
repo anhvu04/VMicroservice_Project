@@ -1,10 +1,13 @@
 using Contracts.Common.Interfaces;
 using Infrastructure.Common.Implementation;
+using Mapster.Utils;
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Product.Repositories.Persistence;
 using Product.Repositories.UnitOfWork;
+using Product.Services.Mapping;
 using Product.Services.Services.Implementation;
 using Product.Services.Services.Interfaces;
 
@@ -40,5 +43,9 @@ public static class ServiceExtensions
         services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
         services.AddScoped<IProductUnitOfWork, ProductUnitOfWork>();
         services.AddScoped<ICatalogProductService, CatalogProductService>();
+        
+        // Add Mapper
+        services.AddScoped<IMapper, Mapper>();
+        MappingConfig.RegisterMapping();
     }
 }

@@ -7,5 +7,5 @@ namespace Product.Repositories.UnitOfWork;
 
 public interface IProductUnitOfWork : IUnitOfWork<ProductContext>
 {
-    IProductGenericRepository<CatalogProduct, Guid> CatalogProducts { get; }
+    IProductGenericRepository<CatalogProduct, Guid> CatalogProduct { get; }
 }

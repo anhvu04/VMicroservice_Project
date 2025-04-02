@@ -15,6 +15,6 @@ public class ProductUnitOfWork : UnitOfWork<ProductContext>, IProductUnitOfWork
         _context = context;
     }
 
-    public IProductGenericRepository<CatalogProduct, Guid> CatalogProducts =>
+    public IProductGenericRepository<CatalogProduct, Guid> CatalogProduct =>
         _catalogProducts ??= new ProductGenericRepository<CatalogProduct, Guid>(_context);
 }

@@ -25,6 +25,7 @@ public static class ServiceExtensions
     private static void ConfigureProductDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
+        Console.WriteLine("ConnectionString: " + connectionString);
         var builder = new MySqlConnectionStringBuilder(connectionString!);
         services.AddDbContext<ProductContext>(options =>
             options.UseMySql(connectionString, ServerVersion.AutoDetect(builder.ConnectionString), e =>

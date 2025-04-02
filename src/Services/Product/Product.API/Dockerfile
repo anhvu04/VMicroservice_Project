@@ -7,15 +7,15 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/Services/Product.API/Product.API.csproj", "src/Services/Product.API/"]
-COPY ["src/BuildingBlocks/Common.Logging/Common.Logging.csproj", "src/BuildingBlocks/Common.Logging/"]
-COPY ["src/BuildingBlocks/Contracts/Contracts.csproj", "src/BuildingBlocks/Contracts/"]
-COPY ["src/BuildingBlocks/Infrastructure/Infrastructure.csproj", "src/BuildingBlocks/Infrastructure/"]
-COPY ["Product.Repositories/Product.Repositories.csproj", "Product.Repositories/"]
-COPY ["Product.Services/Product.Services.csproj", "Product.Services/"]
-RUN dotnet restore "src/Services/Product.API/Product.API.csproj"
+COPY ["Services/Product/Product.API/Product.API.csproj", "Services/Product/Product.API/"]
+COPY ["BuildingBlocks/Common.Logging/Common.Logging.csproj", "BuildingBlocks/Common.Logging/"]
+COPY ["BuildingBlocks/Contracts/Contracts.csproj", "BuildingBlocks/Contracts/"]
+COPY ["BuildingBlocks/Infrastructure/Infrastructure.csproj", "BuildingBlocks/Infrastructure/"]
+COPY ["Services/Product/Product.Repositories/Product.Repositories.csproj", "Services/Product/Product.Repositories/"]
+COPY ["Services/Product/Product.Services/Product.Services.csproj", "Services/Product/Product.Services/"]
+RUN dotnet restore "Services/Product/Product.API/Product.API.csproj"
 COPY . .
-WORKDIR "/src/src/Services/Product.API"
+WORKDIR "/src/Services/Product/Product.API"
 RUN dotnet build "Product.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

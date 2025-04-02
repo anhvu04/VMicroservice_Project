@@ -15,7 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!-- Update these project references to use the correct relative paths -->
         <ProjectReference Include="..\Product.Repositories\Product.Repositories.csproj" />
         <ProjectReference Include="..\Product.Services\Product.Services.csproj" />
     </ItemGroup>

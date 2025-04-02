@@ -66,7 +66,7 @@ services:
     volumes:
       - mongo-data:/var/lib/mongo/data
   
-  #infrastructure section
+  #rabbitmq
   rabbitmq:
     container_name: rabbitmq
     environment:
@@ -137,3 +137,14 @@ services:
       - "5602:5601"
     depends_on:
       - elasticsearch
+  
+  #product-api
+  product-api:
+    container_name: product-api
+    env_file:
+      - .env
+    depends_on:
+      - product-db
+    ports:
+      - "6002:8080"
+    restart: always

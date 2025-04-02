@@ -48,27 +48,27 @@ public class GenericRepository<TEntity, TKey, TContext> : IGenericRepository<TEn
             .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<bool> FindAnyAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
+    public async Task<bool> FindAnyAsync(Expression<Func<TEntity, bool>>? predicate, bool trackChanges = false,
         CancellationToken cancellationToken = default)
     {
         return await FindAll(predicate, trackChanges, cancellationToken).AnyAsync(cancellationToken);
     }
 
-    public async Task<bool> FindAnyAsync(Expression<Func<TEntity, bool>> predicate, bool trackChanges = false,
+    public async Task<bool> FindAnyAsync(Expression<Func<TEntity, bool>>? predicate, bool trackChanges = false,
         CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties)
     {
         return await FindAll(predicate, trackChanges, cancellationToken, includeProperties).AnyAsync(cancellationToken);
     }
 
-    public async Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>> predicate,
+    public async Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>>? predicate,
         bool trackChanges = false,
         CancellationToken cancellationToken = default)
     {
         return await FindAll(predicate, trackChanges, cancellationToken).SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>> predicate,
+    public async Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>>? predicate,
         bool trackChanges = false,
         CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties)

@@ -10,7 +10,7 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - mysql-data:/var/lib/sqlserver/data
+      - mysql-data:/var/lib/mysql
   
   #customer-db
   customer-db:
@@ -147,4 +147,15 @@ services:
       - product-db
     ports:
       - "6002:8080"
+    restart: always
+    
+  #customer-api
+  customer-api:
+    container_name: customer-api
+    env_file:
+      - .env
+    depends_on:
+      - customer-db
+    ports:
+      - "6003:8080"
     restart: always

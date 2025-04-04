@@ -1,7 +1,7 @@
+using Customer.Repositories.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Product.Repositories.Persistence;
 
-namespace Product.API.Extensions;
+namespace Customer.API.Extensions;
 
 public static class HostExtensions
 {
@@ -11,7 +11,7 @@ public static class HostExtensions
         {
             var services = scope.ServiceProvider;
             var logger = services.GetRequiredService<ILogger<TContext>>();
-            var context = services.GetRequiredService<ProductContext>();
+            var context = services.GetRequiredService<CustomerContext>();
             try
             {
                 logger.LogInformation("Start migrating database associated with context {DbContextName}",

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using Product.Services.Utils;
+using Infrastructure.Utils;
 
-namespace Product.Services.Models.Request.CatalogProduct;
+namespace Product.Services.Models.Requests.CatalogProduct;
 
 public class CreateCatalogProductRequest : ValidatableObject
 {

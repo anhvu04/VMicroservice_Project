@@ -1,4 +1,4 @@
-namespace Product.Services.Models.Response.CatalogProduct;
+namespace Product.Services.Models.Responses.CatalogProduct;
 
 public class GetCatalogProduct
 {

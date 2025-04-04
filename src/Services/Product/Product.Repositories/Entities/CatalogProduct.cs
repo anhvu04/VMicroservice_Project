@@ -18,7 +18,7 @@ public class CatalogProduct : EntityAuditBase<Guid>
         {
             "originalPrice" => x => x.OriginalPrice,
             "salePrice" => x => x.SalePrice,
-            _ => x => x.Name
+            _ => x => x.Id
         };
     }
 }

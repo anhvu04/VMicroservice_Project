@@ -1,4 +1,4 @@
-namespace Product.Services.Utils;
+namespace Infrastructure.Utils;
 
 public class Result
 {

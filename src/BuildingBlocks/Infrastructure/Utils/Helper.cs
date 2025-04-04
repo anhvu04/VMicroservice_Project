@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 
-namespace Product.Services.Utils;
+namespace Infrastructure.Utils;
 
 public static class Helper
 {

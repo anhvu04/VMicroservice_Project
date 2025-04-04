@@ -1,4 +1,4 @@
-namespace Product.Services.Utils.Pagination;
+namespace Infrastructure.Utils.Pagination;
 
 public class PaginationParams
 {
@@ -33,6 +33,4 @@ public class PaginationParams
         get => _pageSize;
         set => _pageSize = value > MaxPageSize ? MaxPageSize : value < 1 ? 1 : value;
     }
-
-    public bool HasNextPage { get; set; }
 }

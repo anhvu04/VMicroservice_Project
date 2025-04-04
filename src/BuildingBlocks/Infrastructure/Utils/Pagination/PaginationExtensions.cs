@@ -1,7 +1,7 @@
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
-namespace Product.Services.Utils.Pagination;
+namespace Infrastructure.Utils.Pagination;
 
 public static class PaginationExtension
 {

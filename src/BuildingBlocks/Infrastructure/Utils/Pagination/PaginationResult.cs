@@ -1,4 +1,4 @@
-namespace Product.Services.Utils.Pagination;
+namespace Infrastructure.Utils.Pagination;
 
 public class PaginationResult<T>
 {

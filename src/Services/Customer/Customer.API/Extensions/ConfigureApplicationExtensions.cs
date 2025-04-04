@@ -1,6 +1,6 @@
-namespace Product.API.Extensions;
+namespace Customer.API.Extensions;
 
-public static class ConfigureHostExtensions
+public static class ConfigureApplicationExtensions
 {
     public static void AddAppConfigurations(this WebApplicationBuilder builder)
     {

@@ -72,6 +72,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Customer.Services", "src\Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Customer.Repositories", "src\Services\Customer\Customer.Repositories\Customer.Repositories.csproj", "{BB9C8814-7E5B-4509-B79B-7BEFA59832C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Services", "src\Services\Basket\Basket.Services\Basket.Services.csproj", "{1DAEF25E-CBD4-4E93-900B-C67E4DD7C3FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Repositories", "src\Services\Basket\Basket.Repositories\Basket.Repositories.csproj", "{A1CDBE81-8777-40B3-BE29-CF0AE334A19F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -146,6 +150,14 @@ Global
 		{BB9C8814-7E5B-4509-B79B-7BEFA59832C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB9C8814-7E5B-4509-B79B-7BEFA59832C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB9C8814-7E5B-4509-B79B-7BEFA59832C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DAEF25E-CBD4-4E93-900B-C67E4DD7C3FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DAEF25E-CBD4-4E93-900B-C67E4DD7C3FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DAEF25E-CBD4-4E93-900B-C67E4DD7C3FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DAEF25E-CBD4-4E93-900B-C67E4DD7C3FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1CDBE81-8777-40B3-BE29-CF0AE334A19F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1CDBE81-8777-40B3-BE29-CF0AE334A19F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1CDBE81-8777-40B3-BE29-CF0AE334A19F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1CDBE81-8777-40B3-BE29-CF0AE334A19F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -178,5 +190,7 @@ Global
 		{EEE37B7B-4EDB-44EB-9CCC-3B064EC5936B} = {F113B75C-391D-4747-9DA7-4E3ECA3B4623}
 		{3554B15B-D15F-4BF4-8A8A-29E6B292E728} = {43BBF856-F392-4393-9DF6-994B180C8516}
 		{BB9C8814-7E5B-4509-B79B-7BEFA59832C0} = {43BBF856-F392-4393-9DF6-994B180C8516}
+		{1DAEF25E-CBD4-4E93-900B-C67E4DD7C3FD} = {20DE2F09-4832-4F03-8D3F-E1FB9F32144E}
+		{A1CDBE81-8777-40B3-BE29-CF0AE334A19F} = {20DE2F09-4832-4F03-8D3F-E1FB9F32144E}
 	EndGlobalSection
 EndGlobal

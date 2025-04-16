@@ -1,4 +1,3 @@
-using Contracts.Common.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Product.Services.Models.Requests.CatalogProduct;
 using Product.Services.Services.Interfaces;

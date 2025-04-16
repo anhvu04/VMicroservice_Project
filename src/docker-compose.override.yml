@@ -148,7 +148,7 @@ services:
     ports:
       - "6002:8080"
     restart: always
-    
+  
   #customer-api
   customer-api:
     container_name: customer-api
@@ -158,4 +158,15 @@ services:
       - customer-db
     ports:
       - "6003:8080"
+    restart: always
+  
+  #basket-api
+  basket-api:
+    container_name: basket-api
+    env_file:
+      - .env
+    depends_on:
+      - basket-db
+    ports:
+      - "6004:8080"
     restart: always

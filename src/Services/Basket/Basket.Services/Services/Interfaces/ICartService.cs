@@ -1,7 +1,6 @@
 using Basket.Services.Models.Requests.Cart;
 using Basket.Services.Models.Responses.Cart;
-using Infrastructure.Utils;
-using Infrastructure.Utils.Pagination;
+using Shared.Utils;
 
 namespace Basket.Services.Services.Interfaces;
 

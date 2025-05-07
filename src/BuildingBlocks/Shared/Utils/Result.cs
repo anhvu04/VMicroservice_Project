@@ -1,4 +1,4 @@
-namespace Infrastructure.Utils;
+namespace Shared.Utils;
 
 public class Result
 {

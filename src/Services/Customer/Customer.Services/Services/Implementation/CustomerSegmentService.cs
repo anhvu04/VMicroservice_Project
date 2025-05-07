@@ -5,9 +5,9 @@ using Customer.Repositories.UnitOfWork;
 using Customer.Services.Models.Requests.CustomerSegment;
 using Customer.Services.Models.Responses.CustomerSegment;
 using Customer.Services.Services.Interfaces;
-using Infrastructure.Utils;
-using Infrastructure.Utils.Pagination;
 using Microsoft.EntityFrameworkCore;
+using Shared.Utils;
+using Shared.Utils.Pagination;
 
 namespace Customer.Services.Services.Implementation;
 

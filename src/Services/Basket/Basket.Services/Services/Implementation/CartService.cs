@@ -4,8 +4,7 @@ using Basket.Repositories.Repositories.Interfaces;
 using Basket.Services.Models.Requests.Cart;
 using Basket.Services.Models.Responses.Cart;
 using Basket.Services.Services.Interfaces;
-using Infrastructure.Utils;
-using Infrastructure.Utils.Pagination;
+using Shared.Utils;
 
 namespace Basket.Services.Services.Implementation;
 

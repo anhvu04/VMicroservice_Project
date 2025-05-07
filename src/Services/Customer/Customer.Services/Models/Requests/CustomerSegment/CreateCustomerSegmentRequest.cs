@@ -1,4 +1,4 @@
-using Infrastructure.Utils;
+using Shared.Utils;
 
 namespace Customer.Services.Models.Requests.CustomerSegment;
 

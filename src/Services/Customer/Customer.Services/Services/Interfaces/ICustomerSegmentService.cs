@@ -1,7 +1,7 @@
 using Customer.Services.Models.Requests.CustomerSegment;
 using Customer.Services.Models.Responses.CustomerSegment;
-using Infrastructure.Utils;
-using Infrastructure.Utils.Pagination;
+using Shared.Utils;
+using Shared.Utils.Pagination;
 
 namespace Customer.Services.Services.Interfaces;
 

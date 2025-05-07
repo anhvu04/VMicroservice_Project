@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 
-namespace Infrastructure.Utils;
+namespace Shared.Utils;
 
 public static class Helper
 {
@@ -69,9 +69,9 @@ public static class Helper
 
 internal class ReplaceExpressionVisitor(Expression oldValue, Expression newValue) : ExpressionVisitor
 {
-    public override Expression Visit(Expression node)
+    public override Expression Visit(Expression? node)
     {
-        return node == oldValue ? newValue : base.Visit(node);
+        return (node == oldValue ? newValue : base.Visit(node))!;
     }
 }
 

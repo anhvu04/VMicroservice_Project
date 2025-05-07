@@ -5,11 +5,11 @@ using Ordering.Persistence.Persistence;
 
 namespace Ordering.Persistence.GenericRepository;
 
-public class OrderingGenericRepository<TEntity, TKey, TContext> : GenericRepository<TEntity, TKey, TContext>,
-    IOrderingGenericRepository<TEntity, TKey, TContext>
-    where TEntity : EntityBase<TKey> where TContext : OrderingDbContext
+public class OrderingGenericRepository<TEntity, TKey> : GenericRepository<TEntity, TKey, OrderingContext>,
+    IOrderingGenericRepository<TEntity, TKey>
+    where TEntity : EntityBase<TKey>
 {
-    public OrderingGenericRepository(TContext context) : base(context)
+    public OrderingGenericRepository(OrderingContext context) : base(context)
     {
     }
 }

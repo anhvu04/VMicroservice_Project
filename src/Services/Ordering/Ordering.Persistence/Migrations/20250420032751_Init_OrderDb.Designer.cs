@@ -11,7 +11,7 @@ using Ordering.Persistence.Persistence;
 
 namespace Ordering.Persistence.Migrations
 {
-    [DbContext(typeof(OrderingDbContext))]
+    [DbContext(typeof(OrderingContext))]
     [Migration("20250420032751_Init_OrderDb")]
     partial class Init_OrderDb
     {

@@ -3,9 +3,9 @@ using Ordering.Domain.Entities;
 
 namespace Ordering.Persistence.Persistence;
 
-public class OrderingDbContext : DbContext
+public class OrderingContext : DbContext
 {
-    public OrderingDbContext(DbContextOptions<OrderingDbContext> options) : base(options)
+    public OrderingContext(DbContextOptions<OrderingContext> options) : base(options)
     {
     }
 

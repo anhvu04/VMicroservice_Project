@@ -5,8 +5,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Contracts.Common.Interfaces;
 
-public interface IGenericQueryRepository<TEntity, in TKey, TContext>
-    where TEntity : EntityBase<TKey> where TContext : DbContext
+public interface IGenericQueryRepository<TEntity, in TKey> where TEntity : EntityBase<TKey>
 {
     IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>>? predicate = null, bool trackChanges = false,
         CancellationToken cancellationToken = default);
@@ -28,16 +27,23 @@ public interface IGenericQueryRepository<TEntity, in TKey, TContext>
         CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties);
 
-    Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>>? predicate = null, bool trackChanges = false,
+    Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>>? predicate = null,
+        bool trackChanges = false,
         CancellationToken cancellationToken = default);
 
-    Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>>? predicate = null, bool trackChanges = false,
+    Task<TEntity?> FindByConditionAsync(Expression<Func<TEntity, bool>>? predicate = null,
+        bool trackChanges = false,
         CancellationToken cancellationToken = default,
         params Expression<Func<TEntity, object>>[] includeProperties);
 }
 
-public interface IGenericRepository<TEntity, in TKey, TContext> : IGenericQueryRepository<TEntity, TKey, TContext>
+public interface IGenericQueryRepository<TEntity, in TKey, TContext> : IGenericQueryRepository<TEntity, TKey>
     where TEntity : EntityBase<TKey> where TContext : DbContext
+{
+}
+
+public interface IGenericRepository<TEntity, in TKey> : IGenericQueryRepository<TEntity, TKey>
+    where TEntity : EntityBase<TKey>
 {
     void Add(TEntity entity);
 
@@ -51,4 +57,10 @@ public interface IGenericRepository<TEntity, in TKey, TContext> : IGenericQueryR
     Task<IDbContextTransaction> BeginTransactionAsync();
     Task EndTransactionAsync();
     Task RollbackTransactionAsync();
+}
+
+public interface IGenericRepository<TEntity, in TKey, TContext> : IGenericRepository<TEntity, TKey>,
+    IGenericQueryRepository<TEntity, TKey, TContext>
+    where TEntity : EntityBase<TKey> where TContext : DbContext
+{
 }

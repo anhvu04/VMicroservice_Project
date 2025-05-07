@@ -11,7 +11,7 @@ public static class HostExtensions
         {
             var services = scope.ServiceProvider;
             var logger = services.GetRequiredService<ILogger<TContext>>();
-            var context = services.GetRequiredService<OrderingDbContext>();
+            var context = services.GetRequiredService<OrderingContext>();
             try
             {
                 logger.LogInformation("Start migrating database associated with context {DbContextName}",

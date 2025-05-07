@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Ordering.Application.Extensions;
 using Ordering.Persistence.Extensions;
 using Ordering.Persistence.Persistence;
 
@@ -14,5 +15,6 @@ public static class ServiceExtensions
         services.AddSwaggerGen();
         
         services.AddPersistence(configuration);
+        services.AddApplication();
     }
 }

@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Contracts.Domains;
 
 namespace Ordering.Domain.Entities;
@@ -15,6 +16,16 @@ public class Order : EntityDateBase<Guid>
     public required string PhoneNumber { get; set; }
     public required OrderStatus OrderStatus { get; set; }
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = [];
+
+    public static Expression<Func<Order, object>> GetSortValue(string propertyName)
+    {
+        return propertyName switch
+        {
+            "totalPrice" => o => o.TotalPrice,
+            "totalAmount" => o => o.TotalAmount,
+            _ => o => o.CreatedDate
+        };
+    }
 }
 
 public enum OrderStatus

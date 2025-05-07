@@ -31,7 +31,7 @@ public class Program
             app.UseInfrastructure();
 
             // Migrate database
-            app.MigrateDatabase<OrderingDbContext>(); // muse be after builder.Build(); to prevent "The logger is already frozen"
+            app.MigrateDatabase<OrderingContext>(); // muse be after builder.Build(); to prevent "The logger is already frozen"
             
             app.Run();
         }

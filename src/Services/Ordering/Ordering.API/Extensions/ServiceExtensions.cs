@@ -1,3 +1,5 @@
+using Contracts.Services.EmailService;
+using Infrastructure.Services.EmailService;
 using Microsoft.EntityFrameworkCore;
 using Ordering.Application.Extensions;
 using Ordering.Persistence.Extensions;
@@ -13,8 +15,15 @@ public static class ServiceExtensions
         services.Configure<RouteOptions>(x => x.LowercaseUrls = true);
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-        
+        services.AddEmailService(configuration);
+
         services.AddPersistence(configuration);
         services.AddApplication();
+    }
+
+    private static void AddEmailService(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<EmailSettings>(configuration.GetSection(nameof(EmailSettings)));
+        services.AddSingleton<ISmtpEmailService, SmtpEmailService>();
     }
 }

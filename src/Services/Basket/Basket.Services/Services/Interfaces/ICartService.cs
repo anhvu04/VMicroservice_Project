@@ -9,5 +9,6 @@ public interface ICartService
     Task<Result> AddToCartAsync(AddToCartRequest request);
     Task<Result> UpdateToCartAsync(UpdateToCartRequest request);
     Task<Result> RemoveFromCartAsync(RemoveFromCartRequest request);
-    Task<Result<GetCartResponse>> GetCartAsync(Guid userId, GetCartRequest request);
+    Task<Result<GetCartResponse>> GetCartAsync(Guid userId);
+    Task<Result> DeleteCartAsync(Guid userId);
 }

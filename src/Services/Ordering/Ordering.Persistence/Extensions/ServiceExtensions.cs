@@ -9,7 +9,7 @@ using Ordering.Persistence.UnitOfWork;
 
 namespace Ordering.Persistence.Extensions;
 
-public static class ServiceCollectionExtensions
+public static class ServiceExtensions
 {
     public static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {

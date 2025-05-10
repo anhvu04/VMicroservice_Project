@@ -5,7 +5,7 @@ using Ordering.Domain.UnitOfWork;
 
 namespace Ordering.Application.Extensions;
 
-public static class ServiceCollectionExtensions
+public static class ServiceExtensions
 {
     public static void AddApplication(this IServiceCollection services)
     {

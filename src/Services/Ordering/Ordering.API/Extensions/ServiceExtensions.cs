@@ -1,9 +1,10 @@
 using Contracts.Services.EmailService;
 using Infrastructure.Services.EmailService;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Ordering.Application.Extensions;
+using Ordering.Infrastructure.Extensions;
 using Ordering.Persistence.Extensions;
-using Ordering.Persistence.Persistence;
+using Shared.ConfigurationSettings;
 
 namespace Ordering.API.Extensions;
 
@@ -19,6 +20,7 @@ public static class ServiceExtensions
 
         services.AddPersistence(configuration);
         services.AddApplication();
+        services.AddInfrastructures(configuration);
     }
 
     private static void AddEmailService(this IServiceCollection services, IConfiguration configuration)

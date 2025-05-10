@@ -19,5 +19,7 @@ public class OrderingContext : DbContext
         // Order
         modelBuilder.Entity<Order>().Property(x => x.OrderStatus).HasConversion(x => x.ToString(),
             x => (OrderStatus)Enum.Parse(typeof(OrderStatus), x));
+        modelBuilder.Entity<Order>().Property(x => x.PaymentMethod).HasConversion(x => x.ToString(),
+            x => (PaymentMethod)Enum.Parse(typeof(PaymentMethod), x));
     }
 }

@@ -18,7 +18,11 @@ public class OrderingUnitOfWork : UnitOfWork<OrderingContext>,
     }
 
     private IOrderingGenericRepository<Order, Guid>? _orders;
+    private IOrderingGenericRepository<OrderDetail, Guid>? _orderDetails;
 
     public IOrderingGenericRepository<Order, Guid> Orders =>
         _orders ??= new OrderingGenericRepository<Order, Guid>(_context);
+
+    public IOrderingGenericRepository<OrderDetail, Guid> OrderDetails =>
+        _orderDetails ??= new OrderingGenericRepository<OrderDetail, Guid>(_context);
 }

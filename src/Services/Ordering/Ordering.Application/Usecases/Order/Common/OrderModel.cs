@@ -13,4 +13,5 @@ public record OrderModel
     public string Address { get; set; } = null!;
     public string PhoneNumber { get; set; } = null!;
     public OrderStatus OrderStatus { get; set; }
+    public PaymentMethod PaymentMethod { get; set; }
 }

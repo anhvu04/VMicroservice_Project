@@ -8,4 +8,5 @@ namespace Ordering.Domain.UnitOfWork;
 public interface IOrderingUnitOfWork : IUnitOfWork
 {
     IOrderingGenericRepository<Order, Guid> Orders { get; }
+    IOrderingGenericRepository<OrderDetail, Guid> OrderDetails { get; }
 }

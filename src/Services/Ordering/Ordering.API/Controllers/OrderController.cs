@@ -1,13 +1,15 @@
+using Contracts.Services.EmailService;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Ordering.Application.Usecases.Order.Query.GetOrder;
 using Ordering.Application.Usecases.Order.Query.GetOrders;
+using Shared.Services.EmailService;
 
 namespace Ordering.API.Controllers;
 
 [ApiController]
 [Route("api/orders")]
-public class OrderController(ISender sender) : ApiController(sender)
+public class OrderController(ISender sender, ISmtpEmailService emailService) : ApiController(sender)
 {
     [HttpGet]
     public async Task<IActionResult> GetOrdersAsync([FromQuery] GetOrdersQuery query)

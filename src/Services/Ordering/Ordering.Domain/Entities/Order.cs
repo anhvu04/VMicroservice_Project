@@ -15,6 +15,7 @@ public class Order : EntityDateBase<Guid>
     public required string Address { get; set; }
     public required string PhoneNumber { get; set; }
     public required OrderStatus OrderStatus { get; set; }
+    public required PaymentMethod PaymentMethod { get; set; }
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = [];
 
     public static Expression<Func<Order, object>> GetSortValue(string propertyName)
@@ -35,4 +36,10 @@ public enum OrderStatus
     Shipping = 3,
     Delivered = 4,
     Cancelled = 5
+}
+
+public enum PaymentMethod
+{
+    Cod = 1,
+    BankTransfer = 2
 }

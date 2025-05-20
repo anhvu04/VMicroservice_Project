@@ -176,6 +176,7 @@ services:
       - .env
     depends_on:
       - basket-db
+      - rabbitmq
     ports:
       - "6004:8080"
     restart: always
@@ -189,6 +190,7 @@ services:
       - .env
     depends_on:
       - order-db
+      - rabbitmq
     ports:
       - "6005:8080"
     restart: always

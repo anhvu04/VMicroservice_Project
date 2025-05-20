@@ -1,9 +1,10 @@
 using System.Linq.Expressions;
-using Contracts.Domains;
+using Contracts.Common.Events;
+using Ordering.Domain.OrderAggregate.Events;
 
 namespace Ordering.Domain.Entities;
 
-public class Order : EntityDateBase<Guid>
+public class Order : DateTrackingEventEntity<Guid>
 {
     public Guid UserId { get; set; }
     public int TotalPrice { get; set; }
@@ -26,6 +27,18 @@ public class Order : EntityDateBase<Guid>
             "totalAmount" => o => o.TotalAmount,
             _ => o => o.CreatedDate
         };
+    }
+
+    public void AddedOrder()
+    {
+        AddDomainEvent(new OrderCreatedEvent(Id, UserId, TotalPrice, ShippingFee, TotalAmount, FirstName + LastName,
+            Email,
+            Address, PhoneNumber, OrderStatus, PaymentMethod, OrderDetails.ToList()));
+    }
+
+    public void DeletedOrder()
+    {
+        AddDomainEvent(new OrderDeletedEvent(Id));
     }
 }
 

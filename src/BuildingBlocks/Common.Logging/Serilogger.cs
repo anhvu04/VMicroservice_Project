@@ -6,7 +6,7 @@ namespace Common.Logging;
 
 public static class Serilogger
 {
-    public static Action<HostBuilderContext, LoggerConfiguration> ConfigureLogger = (context, configuration) =>
+    public static readonly Action<HostBuilderContext, LoggerConfiguration> ConfigureLogger = (context, configuration) =>
     {
         var applicationName = context.HostingEnvironment.ApplicationName.ToLower().Replace(".", "-");
         var environmentName = context.HostingEnvironment.EnvironmentName;

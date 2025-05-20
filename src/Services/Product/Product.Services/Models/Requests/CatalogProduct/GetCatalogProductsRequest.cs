@@ -1,4 +1,4 @@
-using Infrastructure.Utils.Pagination;
+using Shared.Utils.Pagination;
 
 namespace Product.Services.Models.Requests.CatalogProduct;
 

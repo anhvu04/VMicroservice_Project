@@ -3,6 +3,10 @@ using Basket.Repositories.Repositories.Interfaces;
 using Basket.Services.Services.Implementation;
 using Basket.Services.Services.Interfaces;
 using Basket.Services.Settings.Redis;
+using MapsterMapper;
+using MassTransit;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Shared.ConfigurationSettings;
 using StackExchange.Redis;
 
 namespace Basket.API.Extensions;
@@ -16,6 +20,7 @@ public static class ServiceExtensions
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.AddRedisDb(configuration);
+        services.AddMassTransit(configuration);
         services.AddDependencyInjection();
     }
 
@@ -34,9 +39,37 @@ public static class ServiceExtensions
         });
     }
 
+    private static void AddMassTransit(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<EventBusSettings>(configuration.GetSection("EventBusSettings"));
+        var eventBusSettings = configuration.GetSection("EventBusSettings").Get<EventBusSettings>()
+                               ?? throw new InvalidOperationException("EventBusSettings is not configured properly.");
+
+        services.TryAddSingleton(KebabCaseEndpointNameFormatter
+            .Instance); // Ex: routing key: BasketCheckoutEvent -> basket-checkout-event
+
+        Console.WriteLine(eventBusSettings.Host + ":" + eventBusSettings.Port + ":" + eventBusSettings.Username + ":" +
+                          eventBusSettings.Password);
+
+        services.AddMassTransit(config =>
+        {
+            config.UsingRabbitMq((_, cfg) =>
+            {
+                cfg.Host(eventBusSettings.Host, (ushort)eventBusSettings.Port, "/", h =>
+                {
+                    h.Username(eventBusSettings.Username);
+                    h.Password(eventBusSettings.Password);
+                });
+            });
+            // config.AddRequestClient<IBasketCheckoutEvent>();
+        });
+    }
+
     private static void AddDependencyInjection(this IServiceCollection services)
     {
         services.AddSingleton<IBasketRepository, BasketRepository>();
         services.AddScoped<ICartService, CartService>();
+        services.AddScoped<ICheckoutService, CheckoutService>();
+        services.AddScoped<IMapper, Mapper>();
     }
 }

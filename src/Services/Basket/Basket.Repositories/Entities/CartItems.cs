@@ -1,9 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace Basket.Repositories.Entities;
 
 public class CartItems
 {
-    public Guid ProductId { get; set; }
-    public string ProductName { get; set; } = null!;
-    public int ProductPrice { get; set; }
-    public int Quantity { get; set; }
+    [JsonPropertyName("productId")] public Guid ProductId { get; set; }
+    [JsonPropertyName("productName")] public string ProductName { get; set; } = null!;
+    [JsonPropertyName("productPrice")] public int ProductPrice { get; set; }
+    [JsonPropertyName("quantity")] public int Quantity { get; set; }
 }

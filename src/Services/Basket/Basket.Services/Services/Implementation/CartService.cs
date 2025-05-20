@@ -4,8 +4,7 @@ using Basket.Repositories.Repositories.Interfaces;
 using Basket.Services.Models.Requests.Cart;
 using Basket.Services.Models.Responses.Cart;
 using Basket.Services.Services.Interfaces;
-using Infrastructure.Utils;
-using Infrastructure.Utils.Pagination;
+using Shared.Utils;
 
 namespace Basket.Services.Services.Implementation;
 
@@ -32,6 +31,8 @@ public class CartService : ICartService
                     new()
                     {
                         ProductId = request.ProductId,
+                        ProductName = request.ProductName,
+                        ProductPrice = request.ProductPrice,
                         Quantity = request.Quantity
                     }
                 },
@@ -52,6 +53,8 @@ public class CartService : ICartService
             cartItem.Items.Add(new CartItems
             {
                 ProductId = request.ProductId,
+                ProductName = request.ProductName,
+                ProductPrice = request.ProductPrice,
                 Quantity = request.Quantity
             });
         }
@@ -116,7 +119,7 @@ public class CartService : ICartService
         return Result.Success();
     }
 
-    public async Task<Result<GetCartResponse>> GetCartAsync(Guid userId, GetCartRequest request)
+    public async Task<Result<GetCartResponse>> GetCartAsync(Guid userId)
     {
         var cartKey = Utils.GetCartKey(userId);
         var cart = await _cartRepository.GetDataByKeyAsync(cartKey);
@@ -148,5 +151,12 @@ public class CartService : ICartService
         };
 
         return Result.Success(response);
+    }
+
+    public async Task<Result> DeleteCartAsync(Guid userId)
+    {
+        var cartKey = Utils.GetCartKey(userId);
+        await _cartRepository.DeleteDataAsync(cartKey);
+        return Result.Success();
     }
 }

@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Infrastructure.Utils;
+using Shared.Utils;
 
 namespace Product.Services.Models.Requests.CatalogProduct;
 

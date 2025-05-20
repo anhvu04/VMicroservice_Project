@@ -1,5 +1,3 @@
-using Basket.Repositories.Entities;
-
 namespace Basket.Services.Models.Responses.Cart;
 
 public class GetCartResponse

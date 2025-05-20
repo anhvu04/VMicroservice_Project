@@ -15,10 +15,10 @@ public class CartController : ControllerBase
         _cartService = cartService;
     }
 
-    [HttpGet]
+    [HttpGet("{userId}")]
     public async Task<IActionResult> GetCart([FromRoute] Guid userId)
     {
-        var res = await _cartService.GetCartAsync(userId, new GetCartRequest());
+        var res = await _cartService.GetCartAsync(userId);
         return res.IsSuccess ? Ok(res.Value) : BadRequest(res);
     }
 

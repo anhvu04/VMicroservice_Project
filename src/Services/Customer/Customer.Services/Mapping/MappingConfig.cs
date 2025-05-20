@@ -1,7 +1,7 @@
 using Customer.Repositories.Entities;
 using Customer.Services.Models.Requests.CustomerSegment;
 using Customer.Services.Models.Responses.CustomerSegment;
-using Infrastructure.Mapping;
+using Infrastructure.Extensions.MappingExtensions;
 using Mapster;
 
 namespace Customer.Services.Mapping;

@@ -4,9 +4,9 @@ using Ordering.Domain.Entities;
 using Ordering.Domain.UnitOfWork;
 using Shared.Utils;
 
-namespace Ordering.Application.Usecases.Order.Command;
+namespace Ordering.Application.Usecases.Order.Command.CreateOrder;
 
-public class CreateOrderCommandHandler : ICommandHandler<CreateOrderRequest>
+public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
 {
     private readonly IOrderingUnitOfWork _orderingUnitOfWork;
     private readonly IMapper _mapper;
@@ -17,27 +17,27 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderRequest>
         _mapper = mapper;
     }
 
-    public async Task<Result> Handle(CreateOrderRequest request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
     {
         var order = new Domain.Entities.Order
         {
-            UserId = request.UserId,
-            TotalPrice = request.TotalPrice,
-            ShippingFee = request.ShippingFee,
-            TotalAmount = request.TotalPrice + request.ShippingFee,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            Email = request.Email,
-            Address = request.Address,
-            PhoneNumber = request.PhoneNumber,
+            UserId = command.UserId,
+            TotalPrice = command.TotalPrice,
+            ShippingFee = command.ShippingFee,
+            TotalAmount = command.TotalPrice + command.ShippingFee,
+            FirstName = command.FirstName,
+            LastName = command.LastName,
+            Email = command.Email,
+            Address = command.Address,
+            PhoneNumber = command.PhoneNumber,
             OrderStatus = OrderStatus.Pending,
-            PaymentMethod = (PaymentMethod)request.PaymentMethod,
+            PaymentMethod = (PaymentMethod)command.PaymentMethod,
         };
 
         _orderingUnitOfWork.Orders.Add(order);
 
         List<OrderDetail> orderDetails = [];
-        request.Items.ForEach(item =>
+        command.Items.ForEach(item =>
         {
             orderDetails.Add(new OrderDetail
             {
@@ -51,9 +51,8 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderRequest>
         });
 
         _orderingUnitOfWork.OrderDetails.AddRange(orderDetails);
-
+        order.AddedOrder();
         await _orderingUnitOfWork.SaveChangesAsync(cancellationToken);
-
         return Result.Success();
     }
 }

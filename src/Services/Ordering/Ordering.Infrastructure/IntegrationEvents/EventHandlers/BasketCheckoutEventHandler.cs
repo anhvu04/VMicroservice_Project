@@ -3,7 +3,7 @@ using MapsterMapper;
 using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Ordering.Application.Usecases.Order.Command;
+using Ordering.Application.Usecases.Order.Command.CreateOrder;
 
 namespace Ordering.Infrastructure.IntegrationEvents.EventHandlers;
 
@@ -23,7 +23,7 @@ public class BasketCheckoutEventHandler : IConsumer<BasketCheckoutEvent>
     public async Task Consume(ConsumeContext<BasketCheckoutEvent> context)
     {
         _logger.LogInformation($"BasketCheckoutEventHandler consumed: {context.Message}");
-        var req = _mapper.Map<CreateOrderRequest>(context.Message);
+        var req = _mapper.Map<CreateOrderCommand>(context.Message);
         await _mediator.Send(req);
     }
 }

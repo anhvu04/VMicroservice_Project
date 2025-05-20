@@ -3,7 +3,6 @@ using Basket.Repositories.Repositories.Interfaces;
 using Basket.Services.Services.Implementation;
 using Basket.Services.Services.Interfaces;
 using Basket.Services.Settings.Redis;
-using EventBus.Messages.IntegrationEvent.Interface;
 using MapsterMapper;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection.Extensions;

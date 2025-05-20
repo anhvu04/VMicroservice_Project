@@ -1,7 +1,7 @@
 using System.Reflection;
 using Mapster;
 
-namespace Infrastructure.Mapping;
+namespace Infrastructure.Extensions.MappingExtensions;
 
 public static class MapsterExtensions
 {

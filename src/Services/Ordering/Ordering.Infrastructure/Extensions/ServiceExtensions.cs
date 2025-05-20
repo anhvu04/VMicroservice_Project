@@ -27,13 +27,17 @@ public static class ServiceExtensions
                           eventBusSettings.Password);
         services.AddMassTransit(config =>
         {
-            config.UsingRabbitMq((_, cfg) =>
+            config.AddConsumer<BasketCheckoutEventHandler>();
+
+            config.UsingRabbitMq((ctx, cfg) =>
             {
                 cfg.Host(eventBusSettings.Host, (ushort)eventBusSettings.Port, "/", h =>
                 {
                     h.Username(eventBusSettings.Username);
                     h.Password(eventBusSettings.Password);
                 });
+
+                cfg.ConfigureEndpoints(ctx);
             });
         });
     }

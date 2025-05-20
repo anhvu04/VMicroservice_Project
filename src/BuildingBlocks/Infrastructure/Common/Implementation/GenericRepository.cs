@@ -6,15 +6,13 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.Common.Implementation;
 
-public class GenericRepository<TEntity, TKey, TContext> : IGenericRepository<TEntity, TKey, TContext>
+public class GenericQueryRepository<TEntity, TKey, TContext> : IGenericQueryRepository<TEntity, TKey, TContext>
     where TEntity : EntityBase<TKey> where TContext : DbContext
 {
-    private readonly TContext _context;
     private readonly DbSet<TEntity> _dbSet;
 
-    public GenericRepository(TContext context)
+    public GenericQueryRepository(TContext context)
     {
-        _context = context;
         _dbSet = context.Set<TEntity>();
     }
 
@@ -75,6 +73,20 @@ public class GenericRepository<TEntity, TKey, TContext> : IGenericRepository<TEn
     {
         return await FindAll(predicate, trackChanges, cancellationToken, includeProperties)
             .SingleOrDefaultAsync(cancellationToken);
+    }
+}
+
+public class GenericRepository<TEntity, TKey, TContext> : GenericQueryRepository<TEntity, TKey, TContext>,
+    IGenericRepository<TEntity, TKey, TContext>
+    where TEntity : EntityBase<TKey> where TContext : DbContext
+{
+    private readonly TContext _context;
+    private readonly DbSet<TEntity> _dbSet;
+
+    public GenericRepository(TContext context) : base(context)
+    {
+        _context = context;
+        _dbSet = context.Set<TEntity>();
     }
 
     public void Add(TEntity entity)

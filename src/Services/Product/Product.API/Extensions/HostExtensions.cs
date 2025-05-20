@@ -14,9 +14,11 @@ public static class HostExtensions
             var context = services.GetRequiredService<ProductContext>();
             try
             {
-                logger.LogInformation("Migrating database...");
+                logger.LogInformation("Start migrating database associated with context {DbContextName}",
+                    typeof(TContext).Name);
                 ExecuteMigration(context);
-                logger.LogInformation("Migrated database successfully!");
+                logger.LogInformation("End migrating database associated with context {DbContextName}",
+                    typeof(TContext).Name);
             }
             catch (Exception e)
             {

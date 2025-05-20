@@ -1,7 +1,7 @@
-using Product.Services.Models.Request.CatalogProduct;
-using Product.Services.Models.Response.CatalogProduct;
-using Product.Services.Utils;
-using Product.Services.Utils.Pagination;
+using Product.Services.Models.Requests.CatalogProduct;
+using Product.Services.Models.Responses.CatalogProduct;
+using Shared.Utils;
+using Shared.Utils.Pagination;
 
 namespace Product.Services.Services.Interfaces;
 

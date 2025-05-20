@@ -10,7 +10,7 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - mysql-data:/var/lib/sqlserver/data
+      - mysql-data:/var/lib/mysql
   
   #customer-db
   customer-db:
@@ -141,10 +141,56 @@ services:
   #product-api
   product-api:
     container_name: product-api
+    environment:
+      - ConnectionStrings__DefaultConnection=${PRODUCT_API_CONNECTION_STRING}
     env_file:
       - .env
     depends_on:
       - product-db
     ports:
       - "6002:8080"
+    restart: always
+  
+  #customer-api
+  customer-api:
+    container_name: customer-api
+    environment:
+      - ConnectionStrings__DefaultConnection=${CUSTOMER_API_CONNECTION_STRING}
+    env_file:
+      - .env
+    depends_on:
+      - customer-db
+    ports:
+      - "6003:8080"
+    restart: always
+  
+  #basket-api
+  basket-api:
+    container_name: basket-api
+    environment:
+      - ConnectionStrings__RedisConnection__Endpoints=${BASKET_API_ENDPOINT}
+      - ConnectionStrings__RedisConnection__Port=${BASKET_API_PORT}
+      - ConnectionStrings__RedisConnection__User=${BASKET_API_USER}
+      - ConnectionStrings__RedisConnection__Password=${BASKET_API_PASSWORD}
+    env_file:
+      - .env
+    depends_on:
+      - basket-db
+      - rabbitmq
+    ports:
+      - "6004:8080"
+    restart: always
+  
+  #order-api
+  order-api:
+    container_name: order-api
+    environment:
+      - ConnectionStrings__DefaultConnection=${ORDER_API_CONNECTION_STRING}
+    env_file:
+      - .env
+    depends_on:
+      - order-db
+      - rabbitmq
+    ports:
+      - "6005:8080"
     restart: always

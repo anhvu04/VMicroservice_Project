@@ -2,11 +2,11 @@ using System.Linq.Expressions;
 using MapsterMapper;
 using Product.Repositories.Entities;
 using Product.Repositories.UnitOfWork;
-using Product.Services.Models.Request.CatalogProduct;
-using Product.Services.Models.Response.CatalogProduct;
+using Product.Services.Models.Requests.CatalogProduct;
+using Product.Services.Models.Responses.CatalogProduct;
 using Product.Services.Services.Interfaces;
-using Product.Services.Utils;
-using Product.Services.Utils.Pagination;
+using Shared.Utils;
+using Shared.Utils.Pagination;
 
 namespace Product.Services.Services.Implementation;
 

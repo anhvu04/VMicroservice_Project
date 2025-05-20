@@ -8,11 +8,13 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/Product/Product.API/Product.API.csproj", "Services/Product/Product.API/"]
+COPY ["Services/Product/Product.Repositories/Product.Repositories.csproj", "Services/Product/Product.Repositories/"]
+COPY ["Services/Product/Product.Services/Product.Services.csproj", "Services/Product/Product.Services/"]
 COPY ["BuildingBlocks/Common.Logging/Common.Logging.csproj", "BuildingBlocks/Common.Logging/"]
 COPY ["BuildingBlocks/Contracts/Contracts.csproj", "BuildingBlocks/Contracts/"]
 COPY ["BuildingBlocks/Infrastructure/Infrastructure.csproj", "BuildingBlocks/Infrastructure/"]
-COPY ["Services/Product/Product.Repositories/Product.Repositories.csproj", "Services/Product/Product.Repositories/"]
-COPY ["Services/Product/Product.Services/Product.Services.csproj", "Services/Product/Product.Services/"]
+COPY ["BuildingBlocks/Shared/Shared.csproj", "BuildingBlocks/Shared/"]
+
 RUN dotnet restore "Services/Product/Product.API/Product.API.csproj"
 COPY . .
 WORKDIR "/src/Services/Product/Product.API"

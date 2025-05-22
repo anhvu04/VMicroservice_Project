@@ -3,9 +3,11 @@ using Basket.Repositories.Repositories.Interfaces;
 using Basket.Services.Services.Implementation;
 using Basket.Services.Services.Interfaces;
 using Basket.Services.Settings.Redis;
+using EventBus.Messages.IntegrationEvent.Event;
 using MapsterMapper;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using RabbitMQ.Client;
 using Shared.ConfigurationSettings;
 using StackExchange.Redis;
 
@@ -59,6 +61,16 @@ public static class ServiceExtensions
                 {
                     h.Username(eventBusSettings.Username);
                     h.Password(eventBusSettings.Password);
+                });
+
+                cfg.Message<BasketCheckoutEvent>(x =>
+                {
+                    x.SetEntityName("basket-checkout-event");
+                });
+
+                cfg.Publish<BasketCheckoutEvent>(x =>
+                {
+                    x.ExchangeType = ExchangeType.Direct;
                 });
             });
             // config.AddRequestClient<IBasketCheckoutEvent>();

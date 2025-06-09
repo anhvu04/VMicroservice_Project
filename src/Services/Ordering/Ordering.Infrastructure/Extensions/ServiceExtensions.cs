@@ -1,4 +1,5 @@
 using MassTransit;
+using MassTransit.Transports.Fabric;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -11,10 +12,10 @@ public static class ServiceExtensions
 {
     public static void AddInfrastructures(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddMassTransit(configuration);
+        services.ConfigureMassTransit(configuration);
     }
 
-    private static void AddMassTransit(this IServiceCollection services, IConfiguration configuration)
+    private static void ConfigureMassTransit(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<EventBusSettings>(configuration.GetSection("EventBusSettings"));
 
@@ -36,6 +37,18 @@ public static class ServiceExtensions
                     h.Username(eventBusSettings.Username);
                     h.Password(eventBusSettings.Password);
                 });
+
+                cfg.ReceiveEndpoint("basket-checkout-queue",
+                    c =>
+                    {
+                        c.ConfigureConsumer<BasketCheckoutEventHandler>(ctx);
+                        c.Bind("basket-checkout-exchange",
+                            x =>
+                            {
+                                x.RoutingKey = "basket-checkout-routing-key"; // Set ở consumer nghĩa là routing key = binding key
+                                x.ExchangeType = "direct";
+                            });
+                    });
 
                 cfg.ConfigureEndpoints(ctx);
             });

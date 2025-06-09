@@ -12,33 +12,33 @@ namespace Customer.API.Extensions;
 
 public static class ServiceExtensions
 {
-    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructure(this WebApplicationBuilder builder)
     {
-        services.AddControllers();
-        services.Configure<RouteOptions>(x => x.LowercaseUrls = true);
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-        services.ConfigureCustomerDbContext(configuration);
-        services.AddDependencyInjection();
+        builder.Services.AddControllers();
+        builder.Services.Configure<RouteOptions>(x => x.LowercaseUrls = true);
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+        builder.ConfigureCustomerDbContext();
+        builder.ConfigureDependencyInjection();
     }
 
-    private static void ConfigureCustomerDbContext(this IServiceCollection services, IConfiguration configuration)
+    private static void ConfigureCustomerDbContext(this WebApplicationBuilder builder)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         Console.WriteLine($"ConnectionString: {connectionString}");
-        services.AddDbContext<CustomerContext>(options =>
+        builder.Services.AddDbContext<CustomerContext>(options =>
             options.UseNpgsql(connectionString, e => { e.MigrationsAssembly("Customer.Repositories"); }));
     }
 
-    private static void AddDependencyInjection(this IServiceCollection services)
+    private static void ConfigureDependencyInjection(this WebApplicationBuilder builder)
     {
-        services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
-        services.AddScoped<ICustomerUnitOfWork, CustomerUnitOfWork>();
-        services.AddScoped<ICustomerSegmentService, CustomerSegmentService>();
-        services.AddSingleton<IPasswordHashing, PasswordHashing>();
+        builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+        builder.Services.AddScoped<ICustomerUnitOfWork, CustomerUnitOfWork>();
+        builder.Services.AddScoped<ICustomerSegmentService, CustomerSegmentService>();
+        builder.Services.AddSingleton<IPasswordHashing, PasswordHashing>();
 
         // Add Mapper
-        services.AddScoped<IMapper, Mapper>();
+        builder.Services.AddScoped<IMapper, Mapper>();
         MappingConfig.RegisterConfig();
     }
 }

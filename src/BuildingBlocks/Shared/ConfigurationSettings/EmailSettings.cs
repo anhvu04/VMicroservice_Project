@@ -1,8 +1,6 @@
-using Contracts.Services.EmailService;
+namespace Shared.ConfigurationSettings;
 
-namespace Infrastructure.Services.EmailService;
-
-public class EmailSettings : IEmailSettings
+public class EmailSettings
 {
     public string SmtpServer { get; set; } = null!;
     public int Port { get; set; }

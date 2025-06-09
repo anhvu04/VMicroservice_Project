@@ -19,22 +19,13 @@ public class Program
 
         try
         {
-            // Add configurations to the container.
-            builder.AddAppConfigurations();
-
             // Add infrastructure
-            builder.Services.AddInfrastructure(builder.Configuration);
+            builder.AddInfrastructure();
 
             var app = builder.Build();
 
-            // Map endpoints
-            app.MapCustomerSegmentController();
-            
             // Use infrastructure
             app.UseInfrastructure();
-
-            // Migrate database
-            app.MigrateDatabase<CustomerContext>();
 
             app.Run();
         }

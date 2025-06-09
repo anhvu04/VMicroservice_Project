@@ -1,17 +1,17 @@
-using Inventory.Product.Repositories.Abstraction;
-using Inventory.Product.Repositories.Attributes;
-using Inventory.Product.Repositories.Entities.Abstraction;
-using Inventory.Product.Repositories.Settings;
+using Contracts.Common.Interfaces;
+using Contracts.Domains;
+using Infrastructure.Extensions.MongoDbExtensions;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using Shared.ConfigurationSettings;
 
-namespace Inventory.Product.Repositories.Repository;
+namespace Infrastructure.Common.Implementation;
 
 public class MongoDbRepository<T> : IMongoDbRepository<T> where T : MongoEntity
 {
     private readonly IMongoDatabase _database;
 
-    public MongoDbRepository(IMongoClient client, IOptions<MongoDbSettings> settings)
+    public MongoDbRepository(IMongoClient client, IOptions<MongoDbConnection> settings)
     {
         _database = client.GetDatabase(settings.Value.DatabaseName);
     }

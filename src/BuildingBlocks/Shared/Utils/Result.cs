@@ -4,8 +4,6 @@ public class Result
 {
     public bool IsSuccess { get; }
     public string? Error { get; }
-    public bool IsFailure => !IsSuccess;
-
     protected Result(bool isSuccess, string? error)
     {
         switch (isSuccess)

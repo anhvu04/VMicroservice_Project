@@ -1,6 +1,6 @@
-namespace Inventory.Product.Repositories.Settings;
+namespace Shared.ConfigurationSettings;
 
-public class MongoDbSettings
+public class MongoDbConnection
 {
     public string Host { get; set; } = null!;
     public int Port { get; set; }

@@ -1,6 +1,9 @@
 using Common.Logging;
 using Inventory.Product.API.Extensions;
+using Inventory.Product.API.GrpcServerServices;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Serilog;
+using Shared.ConfigurationSettings;
 
 namespace Inventory.Product.API;
 
@@ -11,23 +14,20 @@ public class Program
         Log.Logger = new LoggerConfiguration()
             .WriteTo.Console()
             .CreateBootstrapLogger();
+
         var builder = WebApplication.CreateBuilder(args);
         builder.Host.UseSerilog(Serilogger.ConfigureLogger);
         Log.Information("Starting Inventory Product API Up");
 
         try
         {
-            // Add configurations to the container.
-            builder.AddAppConfigurations();
-
             // Add infrastructure
-            builder.Services.AddInfrastructure(builder.Configuration);
+            builder.AddInfrastructure();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Use infrastructure.
             app.UseInfrastructure();
-            app.MigrateDatabase();
 
             app.Run();
         }

@@ -20,19 +20,13 @@ public class Program
 
         try
         {
-            // Add configurations to the container.
-            builder.AddAppConfigurations();
-
             // Add infrastructure
-            builder.Services.AddInfrastructure(builder.Configuration);
+            builder.AddInfrastructure();
 
             var app = builder.Build();
             // Use infrastructure
             app.UseInfrastructure();
 
-            // Migrate database
-            app.MigrateDatabase<OrderingContext>(); // muse be after builder.Build(); to prevent "The logger is already frozen"
-            
             app.Run();
         }
         catch (Exception e)

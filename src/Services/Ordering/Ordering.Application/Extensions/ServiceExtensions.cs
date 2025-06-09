@@ -10,10 +10,10 @@ public static class ServiceExtensions
     public static void AddApplication(this IServiceCollection services)
     {
         services.AddMediatR(opt => { opt.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()); });
-        services.AddDependencyInjection();
+        services.ConfigureDependencyInjection();
     }
 
-    private static void AddDependencyInjection(this IServiceCollection services)
+    private static void ConfigureDependencyInjection(this IServiceCollection services)
     {
         services.AddScoped<IMapper, Mapper>();
     }

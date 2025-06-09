@@ -1,4 +1,4 @@
-namespace Inventory.Product.Repositories.Attributes;
+namespace Infrastructure.Extensions.MongoDbExtensions;
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class BsonCollectionAttribute : Attribute

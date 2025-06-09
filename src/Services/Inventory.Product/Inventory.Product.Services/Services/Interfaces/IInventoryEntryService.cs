@@ -11,4 +11,5 @@ public interface IInventoryEntryService
     Task<Result<PaginationResult<InventoryEntryResponse>>> GetInventoryEntries(GetInventoryEntryRequest request);
     Task<Result<InventoryEntryResponse>> GetInventoryEntryById(string id);
     Task<Result> PurchaseProduct(PurchaseProductRequest request);
+    Task<Result<int>> GetStock(string productId);
 }

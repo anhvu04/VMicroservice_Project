@@ -21,4 +21,18 @@ public class InventoryEntryController : ControllerBase
         var result = await _inventoryEntryService.GetInventoryEntries(request);
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result);
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetInventoryEntryById(string id)
+    {
+        var result = await _inventoryEntryService.GetInventoryEntryById(id);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateInventoryEntry([FromBody] PurchaseProductRequest request)
+    {
+        var result = await _inventoryEntryService.PurchaseProduct(request);
+        return result.IsSuccess ? Ok() : BadRequest(result);
+    }
 }

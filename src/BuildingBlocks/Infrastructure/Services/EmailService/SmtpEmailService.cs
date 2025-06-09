@@ -2,6 +2,7 @@ using Contracts.Services.EmailService;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using Shared.ConfigurationSettings;
 using Shared.Services.EmailService;
 using Shared.Utils;
 
@@ -9,7 +10,7 @@ namespace Infrastructure.Services.EmailService;
 
 public class SmtpEmailService : ISmtpEmailService
 {
-    private readonly IEmailSettings _emailSettings;
+    private readonly EmailSettings _emailSettings;
     private readonly ILogger<SmtpEmailService> _logger;
 
     public SmtpEmailService(IOptions<EmailSettings> emailSettings,

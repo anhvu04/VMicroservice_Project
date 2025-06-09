@@ -9,6 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="grpc.aspnetcore" Version="2.71.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.72.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
@@ -19,6 +24,13 @@
         <ProjectReference Include="..\..\..\BuildingBlocks\Infrastructure\Infrastructure.csproj"/>
         <ProjectReference Include="..\Basket.Repositories\Basket.Repositories.csproj"/>
         <ProjectReference Include="..\Basket.Services\Basket.Services.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Protobuf Include="..\..\Inventory.Product\Inventory.Product.API\Protos\stock.proto">
+        <Link>Protos\stock.proto</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Protobuf>
     </ItemGroup>
 
 </Project>

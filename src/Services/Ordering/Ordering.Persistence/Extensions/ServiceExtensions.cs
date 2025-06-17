@@ -1,5 +1,6 @@
 using Contracts.Common.Interfaces;
 using Infrastructure.Common.Implementation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,25 +12,25 @@ namespace Ordering.Persistence.Extensions;
 
 public static class ServiceExtensions
 {
-    public static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
+    public static void AddPersistence(this WebApplicationBuilder builder)
     {
-        services.ConfigureOrderingDbContext(configuration);
-        services.AddDependencyInjection();
+        builder.ConfigureOrderingDbContext();
+        builder.ConfigureDependencyInjection();
     }
 
-    private static void ConfigureOrderingDbContext(this IServiceCollection services, IConfiguration configuration)
+    private static void ConfigureOrderingDbContext(this WebApplicationBuilder builder)
     {
-        services.AddDbContextPool<OrderingContext>(options =>
+        builder.Services.AddDbContextPool<OrderingContext>(options =>
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             Console.WriteLine(connectionString);
             options.UseSqlServer(connectionString);
         });
     }
 
-    private static void AddDependencyInjection(this IServiceCollection services)
+    private static void ConfigureDependencyInjection(this WebApplicationBuilder builder)
     {
-        services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
-        services.AddScoped<IOrderingUnitOfWork, OrderingUnitOfWork>();
+        builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+        builder.Services.AddScoped<IOrderingUnitOfWork, OrderingUnitOfWork>();
     }
 }

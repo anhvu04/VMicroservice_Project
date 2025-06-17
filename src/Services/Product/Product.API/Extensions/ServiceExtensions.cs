@@ -15,37 +15,37 @@ namespace Product.API.Extensions;
 
 public static class ServiceExtensions
 {
-    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructure(this WebApplicationBuilder builder)
     {
-        services.AddControllers();
-        services.Configure<RouteOptions>(x => x.LowercaseUrls = true);
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-        services.ConfigureProductDbContext(configuration);
-        services.AddDependencyInjection();
+        builder.Services.AddControllers();
+        builder.Services.Configure<RouteOptions>(x => x.LowercaseUrls = true);
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+        builder.ConfigureProductDbContext();
+        builder.AddDependencyInjection();
     }
 
-    private static void ConfigureProductDbContext(this IServiceCollection services, IConfiguration configuration)
+    private static void ConfigureProductDbContext(this WebApplicationBuilder builder)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         Console.WriteLine("ConnectionString: " + connectionString);
-        var builder = new MySqlConnectionStringBuilder(connectionString!);
-        services.AddDbContext<ProductContext>(options =>
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(builder.ConnectionString), e =>
+        var connectionBuilder = new MySqlConnectionStringBuilder(connectionString!);
+        builder.Services.AddDbContext<ProductContext>(options =>
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionBuilder.ConnectionString), e =>
             {
                 e.MigrationsAssembly("Product.Repositories");
                 e.SchemaBehavior(MySqlSchemaBehavior.Ignore);
             }));
     }
 
-    private static void AddDependencyInjection(this IServiceCollection services)
+    private static void AddDependencyInjection(this WebApplicationBuilder builder)
     {
-        services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
-        services.AddScoped<IProductUnitOfWork, ProductUnitOfWork>();
-        services.AddScoped<ICatalogProductService, CatalogProductService>();
-        
+        builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+        builder.Services.AddScoped<IProductUnitOfWork, ProductUnitOfWork>();
+        builder.Services.AddScoped<ICatalogProductService, CatalogProductService>();
+
         // Add Mapper
-        services.AddScoped<IMapper, Mapper>();
+        builder.Services.AddScoped<IMapper, Mapper>();
         MappingConfig.RegisterMapping();
     }
 }

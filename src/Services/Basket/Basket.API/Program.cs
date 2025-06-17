@@ -1,5 +1,8 @@
 using Basket.API.Extensions;
+using Basket.API.GrpcClientServices;
+using Basket.Services.Services.Interfaces;
 using Common.Logging;
+using Inventory.Product.API.Protos;
 using Serilog;
 
 namespace Basket.API;
@@ -17,16 +20,14 @@ public class Program
 
         try
         {
-            // Add configurations to the container.
-            builder.AddAppConfigurations();
-
             // Add infrastructure
-            builder.Services.AddInfrastructure(builder.Configuration);
+            builder.AddInfrastructure(builder.Configuration);
 
             var app = builder.Build();
-            
+
             // Use infrastructure
             app.UseInfrastructure();
+            
             app.Run();
         }
         catch (Exception e)

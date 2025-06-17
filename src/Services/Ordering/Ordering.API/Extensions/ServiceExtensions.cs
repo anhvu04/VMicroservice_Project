@@ -10,22 +10,21 @@ namespace Ordering.API.Extensions;
 
 public static class ServiceExtensions
 {
-    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructure(this WebApplicationBuilder builder)
     {
-        services.AddControllers();
-        services.Configure<RouteOptions>(x => x.LowercaseUrls = true);
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-        services.AddEmailService(configuration);
-
-        services.AddPersistence(configuration);
-        services.AddApplication();
-        services.AddInfrastructures(configuration);
+        builder.Services.AddControllers();
+        builder.Services.Configure<RouteOptions>(x => x.LowercaseUrls = true);
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+        builder.Services.AddApplication();
+        builder.Services.AddInfrastructures(builder.Configuration);
+        builder.AddPersistence();
+        builder.ConfigureEmailService();
     }
 
-    private static void AddEmailService(this IServiceCollection services, IConfiguration configuration)
+    private static void ConfigureEmailService(this WebApplicationBuilder builder)
     {
-        services.Configure<EmailSettings>(configuration.GetSection(nameof(EmailSettings)));
-        services.AddSingleton<ISmtpEmailService, SmtpEmailService>();
+        builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(nameof(EmailSettings)));
+        builder.Services.AddSingleton<ISmtpEmailService, SmtpEmailService>();
     }
 }

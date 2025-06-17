@@ -194,3 +194,21 @@ services:
     ports:
       - "6005:8080"
     restart: always
+    
+  #inventory-api
+  inventory-api:
+    container_name: inventory-api
+    environment:
+      - ConnectionStrings__MongoDbConnection__Host=${INVENTORY_API_HOST}
+      - ConnectionStrings__MongoDbConnection__Port=${INVENTORY_API_PORT}
+      - ConnectionStrings__MongoDbConnection__Username=${INVENTORY_API_USERNAME}
+      - ConnectionStrings__MongoDbConnection__Password=${INVENTORY_API_PASSWORD}
+      - ConnectionStrings__MongoDbConnection__DatabaseName=${INVENTORY_API_DATABASENAME}
+    env_file:
+      - .env
+    depends_on:
+      - inventory-db
+    ports:
+      - "6006:8080"
+      - "6007:8081"
+    restart: always

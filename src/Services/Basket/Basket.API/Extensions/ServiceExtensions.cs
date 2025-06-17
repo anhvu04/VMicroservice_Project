@@ -1,11 +1,15 @@
+using Basket.API.GrpcClientServices;
 using Basket.Repositories.Repositories.Implementation;
 using Basket.Repositories.Repositories.Interfaces;
 using Basket.Services.Services.Implementation;
 using Basket.Services.Services.Interfaces;
 using Basket.Services.Settings.Redis;
+using EventBus.Messages.IntegrationEvent.Event;
+using Inventory.Product.API.Protos;
 using MapsterMapper;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using RabbitMQ.Client;
 using Shared.ConfigurationSettings;
 using StackExchange.Redis;
 
@@ -13,20 +17,30 @@ namespace Basket.API.Extensions;
 
 public static class ServiceExtensions
 {
-    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructure(this WebApplicationBuilder builder, IConfiguration configuration)
     {
-        services.AddControllers();
-        services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-        services.AddRedisDb(configuration);
-        services.AddMassTransit(configuration);
-        services.AddDependencyInjection();
+        builder.Services.AddControllers();
+        builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+        builder.ConfigureRedisDb(configuration);
+        builder.ConfigureMassTransit(configuration);
+        builder.ConfigureDependencyInjection();
+        builder.ConfigureGrpcClient();
     }
 
-    private static void AddRedisDb(this IServiceCollection services, IConfiguration configuration)
+    private static void ConfigureGrpcClient(this WebApplicationBuilder builder)
     {
-        services.AddSingleton<IConnectionMultiplexer>(_ =>
+        builder.Services.AddGrpcClient<StockProtoService.StockProtoServiceClient>(c =>
+        {
+            c.Address = new Uri(builder.Configuration["GrpcSettings:InventoryUrl"]!);
+        });
+        builder.Services.AddScoped<IStockService, GetStockGrpcClientService>();
+    }
+
+    private static void ConfigureRedisDb(this WebApplicationBuilder builder, IConfiguration configuration)
+    {
+        builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
         {
             var redisSettings = configuration.GetSection("ConnectionStrings:RedisConnection").Get<RedisSettings>()
                                 ?? throw new InvalidOperationException("RedisConnection is not configured properly.");
@@ -39,19 +53,19 @@ public static class ServiceExtensions
         });
     }
 
-    private static void AddMassTransit(this IServiceCollection services, IConfiguration configuration)
+    private static void ConfigureMassTransit(this WebApplicationBuilder builder, IConfiguration configuration)
     {
-        services.Configure<EventBusSettings>(configuration.GetSection("EventBusSettings"));
+        builder.Services.Configure<EventBusSettings>(configuration.GetSection("EventBusSettings"));
         var eventBusSettings = configuration.GetSection("EventBusSettings").Get<EventBusSettings>()
                                ?? throw new InvalidOperationException("EventBusSettings is not configured properly.");
 
-        services.TryAddSingleton(KebabCaseEndpointNameFormatter
+        builder.Services.TryAddSingleton(KebabCaseEndpointNameFormatter
             .Instance); // Ex: routing key: BasketCheckoutEvent -> basket-checkout-event
 
         Console.WriteLine(eventBusSettings.Host + ":" + eventBusSettings.Port + ":" + eventBusSettings.Username + ":" +
                           eventBusSettings.Password);
 
-        services.AddMassTransit(config =>
+        builder.Services.AddMassTransit(config =>
         {
             config.UsingRabbitMq((_, cfg) =>
             {
@@ -60,16 +74,20 @@ public static class ServiceExtensions
                     h.Username(eventBusSettings.Username);
                     h.Password(eventBusSettings.Password);
                 });
+
+                cfg.Message<BasketCheckoutEvent>(x => { x.SetEntityName("basket-checkout-exchange"); });
+
+                cfg.Publish<BasketCheckoutEvent>(x => { x.ExchangeType = ExchangeType.Direct; });
             });
             // config.AddRequestClient<IBasketCheckoutEvent>();
         });
     }
 
-    private static void AddDependencyInjection(this IServiceCollection services)
+    private static void ConfigureDependencyInjection(this WebApplicationBuilder builder)
     {
-        services.AddSingleton<IBasketRepository, BasketRepository>();
-        services.AddScoped<ICartService, CartService>();
-        services.AddScoped<ICheckoutService, CheckoutService>();
-        services.AddScoped<IMapper, Mapper>();
+        builder.Services.AddSingleton<IBasketRepository, BasketRepository>();
+        builder.Services.AddScoped<ICartService, CartService>();
+        builder.Services.AddScoped<ICheckoutService, CheckoutService>();
+        builder.Services.AddScoped<IMapper, Mapper>();
     }
 }

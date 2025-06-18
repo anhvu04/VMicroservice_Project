@@ -43,7 +43,7 @@ public class Program
         }
         finally
         {
-            Log.Information("Inventory Product API Up Shutdown");
+            Log.Information("Inventory Product API Shutdown");
             Log.CloseAndFlush();
         }
     }

@@ -31,9 +31,12 @@ public static class ServiceExtensions
 
     private static void ConfigureGrpcClient(this WebApplicationBuilder builder)
     {
+        var grpcHostSettings = builder.Configuration.GetSection(nameof(GrpcHostSettings)).Get<GrpcHostSettings>() ??
+                               throw new InvalidOperationException("GrpcHostSettings is not configured properly.");
+
         builder.Services.AddGrpcClient<StockProtoService.StockProtoServiceClient>(c =>
         {
-            c.Address = new Uri(builder.Configuration["GrpcSettings:InventoryUrl"]!);
+            c.Address = new Uri(grpcHostSettings.InventoryUrl);
         });
         builder.Services.AddScoped<IStockService, GetStockGrpcClientService>();
     }

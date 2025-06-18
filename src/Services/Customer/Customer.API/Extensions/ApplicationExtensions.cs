@@ -1,5 +1,6 @@
 using Customer.API.Controllers;
 using Customer.Repositories.Persistence;
+using Infrastructure.Middlewares;
 using Microsoft.EntityFrameworkCore;
 
 namespace Customer.API.Extensions;
@@ -8,9 +9,9 @@ public static class ApplicationExtensions
 {
     public static void UseInfrastructure(this WebApplication app)
     {
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
         // Map Controllers
         app.MapCustomerSegmentController();
-        
         app.UseSwagger();
         app.UseSwaggerUI();
         app.UseRouting();

@@ -5,7 +5,7 @@ using Product.Services.Services.Interfaces;
 namespace Product.API.Controllers;
 
 [ApiController]
-[Route("api/products")]
+[Route("v1/products")]
 public class CatalogProductController : ControllerBase
 {
     private readonly ICatalogProductService _catalogProductService;

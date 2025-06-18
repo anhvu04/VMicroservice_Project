@@ -1,3 +1,4 @@
+using Infrastructure.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using Ordering.Persistence.Persistence;
 
@@ -7,6 +8,7 @@ public static class ApplicationExtensions
 {
     public static void UseInfrastructure(this WebApplication app)
     {
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseSwagger();
         app.UseSwaggerUI();
         app.UseRouting();

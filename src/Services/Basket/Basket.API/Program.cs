@@ -42,7 +42,7 @@ public class Program
         }
         finally
         {
-            Log.Information("Basket API Up Shutdown");
+            Log.Information("Basket API Shutdown");
             Log.CloseAndFlush();
         }
     }

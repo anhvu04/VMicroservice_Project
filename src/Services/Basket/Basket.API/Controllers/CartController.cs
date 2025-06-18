@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Basket.API.Controllers;
 
 [ApiController]
-[Route("api/cart")]
+[Route("v1/carts")]
 public class CartController : ControllerBase
 {
     private readonly ICartService _cartService;

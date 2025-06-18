@@ -8,7 +8,7 @@ public static class CustomerSegmentController
 {
     public static void MapCustomerSegmentController(this WebApplication app)
     {
-        app.MapGet("/api/customer-segment",
+        app.MapGet("/v1/customer-segments",
             async (HttpRequest request, ICustomerSegmentService service) =>
             {
                 var requestParams = new GetCustomerSegmentsRequest
@@ -29,21 +29,21 @@ public static class CustomerSegmentController
                 return res.IsSuccess ? Results.Ok(res.Value) : Results.BadRequest(res);
             });
 
-        app.MapGet("/api/customer-segment/{id}",
+        app.MapGet("/v1/customer-segments/{id}",
             async ([FromRoute] Guid id, ICustomerSegmentService service) =>
             {
                 var res = await service.GetCustomerSegmentAsync(id);
                 return res.IsSuccess ? Results.Ok(res.Value) : Results.BadRequest(res);
             });
 
-        app.MapPost("/api/customer-segment",
+        app.MapPost("/v1/customer-segments",
             async ([FromBody] CreateCustomerSegmentRequest request, ICustomerSegmentService service) =>
             {
                 var res = await service.CreateCustomerSegmentAsync(request);
                 return res.IsSuccess ? Results.Ok() : Results.BadRequest(res);
             });
 
-        app.MapPatch("/api/customer-segment/{id}",
+        app.MapPatch("/v1/customer-segments/{id}",
             async ([FromRoute] Guid id, [FromBody] UpdateCustomerSegmentRequest request,
                 ICustomerSegmentService service) =>
             {
@@ -51,7 +51,7 @@ public static class CustomerSegmentController
                 return res.IsSuccess ? Results.Ok() : Results.BadRequest(res);
             });
 
-        app.MapDelete("/api/customer-segment/{id}",
+        app.MapDelete("/v1/customer-segments/{id}",
             async ([FromRoute] Guid id, ICustomerSegmentService service) =>
             {
                 var res = await service.DeleteCustomerSegmentAsync(id);

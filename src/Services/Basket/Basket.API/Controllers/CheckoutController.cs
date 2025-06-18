@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Basket.API.Controllers;
 
 [ApiController]
-[Route("api/checkout")]
+[Route("v1/checkout")]
 public class CheckoutController : ControllerBase
 {
     private readonly ICheckoutService _checkoutService;

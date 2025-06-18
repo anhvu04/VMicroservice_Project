@@ -41,7 +41,7 @@ public class Program
         }
         finally
         {
-            Log.Information("Ordering API Up Shutdown");
+            Log.Information("Ordering API Shutdown");
             Log.CloseAndFlush();
         }
     }

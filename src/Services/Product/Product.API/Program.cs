@@ -41,7 +41,7 @@ public class Program
         }
         finally
         {
-            Log.Information("Product API Up Shutdown");
+            Log.Information("Product API Shutdown");
             Log.CloseAndFlush();
         }
     }

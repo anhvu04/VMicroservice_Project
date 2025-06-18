@@ -1,3 +1,4 @@
+using Infrastructure.Middlewares;
 using Inventory.Product.API.GrpcServerServices;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -9,6 +10,7 @@ public static class ApplicationExtensions
 {
     public static void UseInfrastructure(this WebApplication app)
     {
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseSwagger();
         app.UseSwaggerUI();
         app.UseRouting();

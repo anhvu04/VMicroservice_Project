@@ -40,7 +40,7 @@ public static class ServiceExtensions
     {
         var mongoDbSettings =
             builder.Configuration.GetSection("ConnectionStrings:MongoDbConnection").Get<MongoDbConnection>() ??
-            throw new Exception("MongoDbSettings is not configured");
+            throw new Exception("MongoDbSettings is not configured properly");
         builder.Services.Configure<MongoDbConnection>(
             builder.Configuration.GetSection("ConnectionStrings:MongoDbConnection"));
 

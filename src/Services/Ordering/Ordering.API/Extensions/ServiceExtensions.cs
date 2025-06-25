@@ -18,7 +18,7 @@ public static class ServiceExtensions
         builder.Services.AddSwaggerGen();
         builder.Services.AddApplication();
         builder.Services.AddInfrastructures(builder.Configuration);
-        builder.AddPersistence();
+        builder.Services.AddPersistence(builder.Configuration);
         builder.ConfigureEmailService();
     }
 

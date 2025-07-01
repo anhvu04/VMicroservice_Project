@@ -57,10 +57,11 @@ public class JwtServices : IJwtServices
     {
         return new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Email, user.Email),
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Email, user.Email),
             new("phone", user.PhoneNumber),
-            new(ClaimTypes.Role, user.Role.ToString())
+            new("full_name", user.FirstName + " " + user.LastName),
+            new("role", user.Role.ToString())
         };
     }
 

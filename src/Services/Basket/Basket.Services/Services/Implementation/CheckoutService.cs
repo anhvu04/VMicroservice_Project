@@ -29,7 +29,6 @@ public class CheckoutService : ICheckoutService
 
     public async Task<Result> CheckoutAsync(CheckoutRequest request)
     {
-        request.UserId = Guid.Parse("66d0125b-c4ed-4995-888c-7563044da14a");
         var cart = await _cartService.GetCartAsync(request.UserId);
         if (!cart.IsSuccess)
         {

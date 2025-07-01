@@ -5,6 +5,7 @@ using Basket.Services.Services.Implementation;
 using Basket.Services.Services.Interfaces;
 using Basket.Services.Settings.Redis;
 using EventBus.Messages.IntegrationEvent.Event;
+using Infrastructure.ConfigurationService;
 using Inventory.Product.API.Protos;
 using MapsterMapper;
 using MassTransit;
@@ -27,6 +28,9 @@ public static class ServiceExtensions
         builder.ConfigureMassTransit(configuration);
         builder.ConfigureDependencyInjection();
         builder.ConfigureGrpcClient();
+        builder.ConfigureJwtAuthentication();
+        builder.ConfigureClaimsRequirement();
+        builder.ConfigureSwaggerAuth();
     }
 
     private static void ConfigureGrpcClient(this WebApplicationBuilder builder)

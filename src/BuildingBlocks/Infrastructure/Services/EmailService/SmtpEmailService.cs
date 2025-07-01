@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using Shared.ConfigurationSettings;
-using Shared.Services.EmailService;
+using Shared.ServiceModels.EmailServiceModel;
 using Shared.Utils;
 
 namespace Infrastructure.Services.EmailService;

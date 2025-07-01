@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Basket.Services.Models.Requests.Cart;
 
 public class AddToCartRequest
 {
-    public Guid UserId { get; set; }
+    [JsonIgnore] public Guid UserId { get; set; }
     public Guid ProductId { get; set; }
     public string ProductName { get; set; } = null!;
     public int ProductPrice { get; set; }

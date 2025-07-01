@@ -4,7 +4,6 @@ using Ordering.Application.Usecases.Order.Command.CreateOrder;
 using Ordering.Application.Usecases.Order.Command.DeleteOrder;
 using Ordering.Application.Usecases.Order.Query.GetOrder;
 using Ordering.Application.Usecases.Order.Query.GetOrders;
-using Shared.Services.EmailService;
 
 namespace Ordering.API.Controllers;
 

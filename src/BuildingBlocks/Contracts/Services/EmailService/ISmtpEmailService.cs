@@ -1,4 +1,4 @@
-using Shared.Services.EmailService;
+using Shared.ServiceModels.EmailServiceModel;
 
 namespace Contracts.Services.EmailService;
 

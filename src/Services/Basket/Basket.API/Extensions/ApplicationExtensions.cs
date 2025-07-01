@@ -11,6 +11,7 @@ public static class ApplicationExtensions
         app.UseSwaggerUI();
         app.UseRouting();
         app.MapControllers();
+        app.UseAuthentication();
         app.UseAuthorization();
     }
 }

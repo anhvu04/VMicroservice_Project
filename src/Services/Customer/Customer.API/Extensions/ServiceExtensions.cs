@@ -5,6 +5,7 @@ using Customer.Services.Mapping;
 using Customer.Services.Services.Implementation;
 using Customer.Services.Services.Interfaces;
 using Infrastructure.Common.Implementation;
+using Infrastructure.ConfigurationService;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,9 @@ public static class ServiceExtensions
         builder.Services.AddSwaggerGen();
         builder.ConfigureCustomerDbContext();
         builder.ConfigureDependencyInjection();
+        builder.ConfigureJwtAuthentication();
+        builder.ConfigureSwaggerAuth();
+        builder.ConfigureClaimsRequirement();
     }
 
     private static void ConfigureCustomerDbContext(this WebApplicationBuilder builder)
@@ -35,7 +39,6 @@ public static class ServiceExtensions
         builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
         builder.Services.AddScoped<ICustomerUnitOfWork, CustomerUnitOfWork>();
         builder.Services.AddScoped<ICustomerSegmentService, CustomerSegmentService>();
-        builder.Services.AddSingleton<IPasswordHashing, PasswordHashing>();
 
         // Add Mapper
         builder.Services.AddScoped<IMapper, Mapper>();

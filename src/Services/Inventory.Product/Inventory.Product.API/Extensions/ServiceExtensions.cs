@@ -1,5 +1,6 @@
 using Contracts.Common.Interfaces;
 using Infrastructure.Common.Implementation;
+using Infrastructure.ConfigurationService;
 using Inventory.Product.API.GrpcServerServices;
 using Inventory.Product.Services.Services.Implementation;
 using Inventory.Product.Services.Services.Interfaces;
@@ -21,6 +22,9 @@ public static class ServiceExtensions
         builder.ConfigureInventoryDb();
         builder.ConfigureDependencyInjection();
         builder.ConfigureGrpcClients();
+        builder.ConfigureClaimsRequirement();
+        builder.ConfigureJwtAuthentication();
+        builder.ConfigureSwaggerAuth();
     }
 
     private static void ConfigureGrpcClients(this WebApplicationBuilder builder)
@@ -40,7 +44,7 @@ public static class ServiceExtensions
     {
         var mongoDbSettings =
             builder.Configuration.GetSection("ConnectionStrings:MongoDbConnection").Get<MongoDbConnection>() ??
-            throw new Exception("MongoDbSettings is not configured");
+            throw new Exception("MongoDbSettings is not configured properly");
         builder.Services.Configure<MongoDbConnection>(
             builder.Configuration.GetSection("ConnectionStrings:MongoDbConnection"));
 

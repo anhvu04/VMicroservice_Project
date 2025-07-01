@@ -1,7 +1,7 @@
-using System.Reflection;
+using FluentValidation;
+using Infrastructure.Behaviors;
 using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
-using Ordering.Domain.UnitOfWork;
 
 namespace Ordering.Application.Extensions;
 
@@ -9,11 +9,21 @@ public static class ServiceExtensions
 {
     public static void AddApplication(this IServiceCollection services)
     {
-        services.AddMediatR(opt => { opt.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()); });
-        services.ConfigureDependencyInjection();
+        services.ConfigureMediatR();
+        services.ConfigureMapper();
     }
 
-    private static void ConfigureDependencyInjection(this IServiceCollection services)
+    private static void ConfigureMediatR(this IServiceCollection services)
+    {
+        services.AddMediatR(opt =>
+        {
+            opt.RegisterServicesFromAssembly(AssemblyReference.Assembly);
+            opt.AddOpenBehavior(typeof(ValidationBehavior<,>));
+        });
+        services.AddValidatorsFromAssembly(AssemblyReference.Assembly);
+    }
+
+    private static void ConfigureMapper(this IServiceCollection services)
     {
         services.AddScoped<IMapper, Mapper>();
     }

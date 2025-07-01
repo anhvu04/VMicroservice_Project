@@ -1,5 +1,6 @@
 using Contracts.Common.Interfaces;
 using Infrastructure.Common.Implementation;
+using Infrastructure.ConfigurationService;
 using Mapster.Utils;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,10 @@ public static class ServiceExtensions
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.ConfigureProductDbContext();
-        builder.AddDependencyInjection();
+        builder.ConfigureDependencyInjection();
+        builder.ConfigureClaimsRequirement();
+        builder.ConfigureJwtAuthentication();
+        builder.ConfigureSwaggerAuth();
     }
 
     private static void ConfigureProductDbContext(this WebApplicationBuilder builder)
@@ -38,7 +42,7 @@ public static class ServiceExtensions
             }));
     }
 
-    private static void AddDependencyInjection(this WebApplicationBuilder builder)
+    private static void ConfigureDependencyInjection(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
         builder.Services.AddScoped<IProductUnitOfWork, ProductUnitOfWork>();

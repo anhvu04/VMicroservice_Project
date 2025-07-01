@@ -12,25 +12,25 @@ namespace Ordering.Persistence.Extensions;
 
 public static class ServiceExtensions
 {
-    public static void AddPersistence(this WebApplicationBuilder builder)
+    public static void AddPersistence(this IServiceCollection service, IConfiguration configuration)
     {
-        builder.ConfigureOrderingDbContext();
-        builder.ConfigureDependencyInjection();
+        service.ConfigureOrderingDbContext(configuration);
+        service.ConfigureDependencyInjection();
     }
 
-    private static void ConfigureOrderingDbContext(this WebApplicationBuilder builder)
+    private static void ConfigureOrderingDbContext(this IServiceCollection service, IConfiguration configuration)
     {
-        builder.Services.AddDbContextPool<OrderingContext>(options =>
+        service.AddDbContextPool<OrderingContext>(options =>
         {
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
             Console.WriteLine(connectionString);
             options.UseSqlServer(connectionString);
         });
     }
 
-    private static void ConfigureDependencyInjection(this WebApplicationBuilder builder)
+    private static void ConfigureDependencyInjection(this IServiceCollection service)
     {
-        builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
-        builder.Services.AddScoped<IOrderingUnitOfWork, OrderingUnitOfWork>();
+        service.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+        service.AddScoped<IOrderingUnitOfWork, OrderingUnitOfWork>();
     }
 }

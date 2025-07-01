@@ -1,4 +1,5 @@
 using Contracts.Services.EmailService;
+using Infrastructure.ConfigurationService;
 using Infrastructure.Services.EmailService;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Ordering.Application.Extensions;
@@ -18,13 +19,15 @@ public static class ServiceExtensions
         builder.Services.AddSwaggerGen();
         builder.Services.AddApplication();
         builder.Services.AddInfrastructures(builder.Configuration);
-        builder.AddPersistence();
-        builder.ConfigureEmailService();
+        builder.Services.AddPersistence(builder.Configuration);
+        builder.ConfigureServices();
     }
 
-    private static void ConfigureEmailService(this WebApplicationBuilder builder)
+    private static void ConfigureServices(this WebApplicationBuilder builder)
     {
-        builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(nameof(EmailSettings)));
-        builder.Services.AddSingleton<ISmtpEmailService, SmtpEmailService>();
+        builder.ConfigureClaimsRequirement();
+        builder.ConfigureJwtAuthentication();
+        builder.ConfigureSwaggerAuth();
+        builder.ConfigureEmailService();
     }
 }

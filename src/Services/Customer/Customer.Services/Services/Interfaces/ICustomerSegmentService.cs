@@ -13,11 +13,11 @@ public interface ICustomerSegmentService
     Task<Result<GetCustomerSegment>>
         GetCustomerSegmentAsync(Guid id, CancellationToken cancellationToken = default);
 
-    Task<Result> CreateCustomerSegmentAsync(CreateCustomerSegmentRequest request,
-        CancellationToken cancellationToken = default);
-
-    Task<Result> UpdateCustomerSegmentAsync(Guid id, UpdateCustomerSegmentRequest request,
-        CancellationToken cancellationToken = default);
-
-    Task<Result> DeleteCustomerSegmentAsync(Guid id, CancellationToken cancellationToken = default);
+    // Task<Result> CreateCustomerSegmentAsync(CreateCustomerSegmentRequest request,
+    //     CancellationToken cancellationToken = default);
+    //
+    // Task<Result> UpdateCustomerSegmentAsync(Guid id, UpdateCustomerSegmentRequest request,
+    //     CancellationToken cancellationToken = default);
+    //
+    // Task<Result> DeleteCustomerSegmentAsync(Guid id, CancellationToken cancellationToken = default);
 }

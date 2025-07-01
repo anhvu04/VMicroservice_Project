@@ -1,6 +1,8 @@
 using Customer.Services.Models.Requests.CustomerSegment;
 using Customer.Services.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Enums;
 
 namespace Customer.API.Controllers;
 
@@ -9,6 +11,7 @@ public static class CustomerSegmentController
     public static void MapCustomerSegmentController(this WebApplication app)
     {
         app.MapGet("/v1/customer-segments",
+            [Authorize(Roles = nameof(UserRoles.Admin) + "," + nameof(UserRoles.Staff))]
             async (HttpRequest request, ICustomerSegmentService service) =>
             {
                 var requestParams = new GetCustomerSegmentsRequest
@@ -30,32 +33,36 @@ public static class CustomerSegmentController
             });
 
         app.MapGet("/v1/customer-segments/{id}",
+            [Authorize(Roles = nameof(UserRoles.Admin) + "," + nameof(UserRoles.Staff))]
             async ([FromRoute] Guid id, ICustomerSegmentService service) =>
             {
                 var res = await service.GetCustomerSegmentAsync(id);
                 return res.IsSuccess ? Results.Ok(res.Value) : Results.BadRequest(res);
             });
 
-        app.MapPost("/v1/customer-segments",
-            async ([FromBody] CreateCustomerSegmentRequest request, ICustomerSegmentService service) =>
-            {
-                var res = await service.CreateCustomerSegmentAsync(request);
-                return res.IsSuccess ? Results.Ok() : Results.BadRequest(res);
-            });
-
-        app.MapPatch("/v1/customer-segments/{id}",
-            async ([FromRoute] Guid id, [FromBody] UpdateCustomerSegmentRequest request,
-                ICustomerSegmentService service) =>
-            {
-                var res = await service.UpdateCustomerSegmentAsync(id, request);
-                return res.IsSuccess ? Results.Ok() : Results.BadRequest(res);
-            });
-
-        app.MapDelete("/v1/customer-segments/{id}",
-            async ([FromRoute] Guid id, ICustomerSegmentService service) =>
-            {
-                var res = await service.DeleteCustomerSegmentAsync(id);
-                return res.IsSuccess ? Results.Ok() : Results.BadRequest(res);
-            });
+        // app.MapPost("/v1/customer-segments",
+        //     async ([FromBody] CreateCustomerSegmentRequest request, ICustomerSegmentService service) =>
+        //     {
+        //         var res = await service.CreateCustomerSegmentAsync(request);
+        //         return res.IsSuccess ? Results.Ok() : Results.BadRequest(res);
+        //     });
+        //
+        //
+        // app.MapPatch("/v1/customer-segments/{id}",
+        //     [Authorize(Roles = nameof(UserRoles.Admin))]
+        //     async ([FromRoute] Guid id, [FromBody] UpdateCustomerSegmentRequest request,
+        //         ICustomerSegmentService service) =>
+        //     {
+        //         var res = await service.UpdateCustomerSegmentAsync(id, request);
+        //         return res.IsSuccess ? Results.Ok() : Results.BadRequest(res);
+        //     });
+        //
+        // app.MapDelete("/v1/customer-segments/{id}",
+        //     [Authorize(Roles = nameof(UserRoles.Admin))]
+        //     async ([FromRoute] Guid id, ICustomerSegmentService service) =>
+        //     {
+        //         var res = await service.DeleteCustomerSegmentAsync(id);
+        //         return res.IsSuccess ? Results.Ok() : Results.BadRequest(res);
+        //     });
     }
 }

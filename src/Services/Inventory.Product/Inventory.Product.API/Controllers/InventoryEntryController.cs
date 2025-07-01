@@ -1,6 +1,8 @@
 using Inventory.Product.Services.Models.Requests.InventoryEntry;
 using Inventory.Product.Services.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Enums;
 
 namespace Inventory.Product.API.Controllers;
 
@@ -16,6 +18,7 @@ public class InventoryEntryController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = nameof(UserRoles.Admin) + "," + nameof(UserRoles.Staff))]
     public async Task<IActionResult> GetInventoryEntries([FromQuery] GetInventoryEntryRequest request)
     {
         var result = await _inventoryEntryService.GetInventoryEntries(request);
@@ -23,6 +26,7 @@ public class InventoryEntryController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = nameof(UserRoles.Admin) + "," + nameof(UserRoles.Staff))]
     public async Task<IActionResult> GetInventoryEntryById(string id)
     {
         var result = await _inventoryEntryService.GetInventoryEntryById(id);
@@ -30,6 +34,7 @@ public class InventoryEntryController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = nameof(UserRoles.Admin) + "," + nameof(UserRoles.Staff))]
     public async Task<IActionResult> CreateInventoryEntry([FromBody] PurchaseProductRequest request)
     {
         var result = await _inventoryEntryService.PurchaseProduct(request);

@@ -8,23 +8,29 @@ public static class ApplicationExtensions
     public static async Task UseInfrastructure(this WebApplication app)
     {
         app.UseCors("CorsPolicy");
-        app.ConfigureMiddleware();
-        app.ConfigureSwagger();
+        app.UseMiddleware();
+        app.UseSwaggerOcelot();
         app.UseRouting();
         app.MapControllers();
+        app.UseAuthentication();
         app.UseAuthorization();
         await app.UseOcelot();
     }
 
-    private static void ConfigureMiddleware(this WebApplication app)
+    private static void UseMiddleware(this WebApplication app)
     {
         app.UseMiddleware<CorrelationIdMiddleware>();
         app.UseMiddleware<ExceptionHandlingMiddleware>();
     }
 
-    private static void ConfigureSwagger(this WebApplication app)
+    private static void UseSwaggerOcelot(this WebApplication app)
     {
         app.UseSwagger();
-        app.UseSwaggerUI();
+        app.UseSwaggerForOcelotUI(opt => { opt.PathToSwaggerGenerator = "/swagger/docs"; });
     }
+
+    // private static void UseSwagger(this WebApplication app)
+    // {
+    //     app.UseSwaggerUI();
+    // }
 }

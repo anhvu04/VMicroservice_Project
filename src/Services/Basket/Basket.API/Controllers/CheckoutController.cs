@@ -18,11 +18,22 @@ public class CheckoutController : ControllerBase
         _checkoutService = checkoutService;
     }
 
+    // private static int _count = 0; // For testing circuit breaker
+
     [HttpPost]
     [Authorize(Roles = nameof(UserRoles.Customer))]
     [RequireUserClaims(ClaimRequirements.UserId)]
     public async Task<IActionResult> Checkout([FromBody] CheckoutRequest request)
     {
+        // For testing circuit breaker
+        // _count++;
+        // Console.WriteLine(_count);
+        // if (_count < 4)
+        // {
+        //     // Force an exception to clearly trigger the circuit breaker
+        //     throw new Exception($"Test exception for circuit breaker - count: {_count}");
+        // }
+
         var validateClaims = this.GetValidatedUserClaims();
         if (validateClaims is null)
         {

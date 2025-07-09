@@ -10,7 +10,7 @@ using Shared.Enums;
 namespace Ordering.API.Controllers;
 
 [ApiController]
-[Route("api/orders")]
+[Route("v1/orders")]
 public class OrderController(ISender sender) : ApiController(sender)
 {
     [HttpGet]

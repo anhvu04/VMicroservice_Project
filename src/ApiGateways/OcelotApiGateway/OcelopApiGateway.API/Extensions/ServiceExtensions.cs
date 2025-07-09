@@ -1,4 +1,7 @@
+using Infrastructure.ConfigurationService;
+using Ocelot.Cache.CacheManager;
 using Ocelot.DependencyInjection;
+using Ocelot.Provider.Polly;
 
 namespace OcelotApiGateway.Extensions;
 
@@ -11,11 +14,13 @@ public static class ServiceExtensions
         builder.Services.AddSwaggerGen();
         builder.ConfigureOcelot();
         builder.ConfigureCors();
+        builder.ConfigureJwtAuthentication();
+        builder.ConfigureSwaggerOcelot();
     }
 
     private static void ConfigureOcelot(this WebApplicationBuilder builder)
     {
-        builder.Services.AddOcelot();
+        builder.Services.AddOcelot().AddPolly().AddCacheManager(x => x.WithDictionaryHandle());
     }
 
     private static void ConfigureCors(this WebApplicationBuilder builder)
@@ -26,6 +31,14 @@ public static class ServiceExtensions
                 corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader());
+        });
+    }
+
+    private static void ConfigureSwaggerOcelot(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddSwaggerForOcelot(builder.Configuration, x =>
+        {
+            x.GenerateDocsForGatewayItSelf = true;
         });
     }
 }

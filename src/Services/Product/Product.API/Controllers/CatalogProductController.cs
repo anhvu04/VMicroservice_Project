@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Product.Services.Models.Requests.CatalogProduct;
 using Product.Services.Services.Interfaces;
+using Shared.Enums;
 
 namespace Product.API.Controllers;
 
@@ -31,6 +33,7 @@ public class CatalogProductController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = nameof(UserRoles.Admin) + "," + nameof(UserRoles.Staff))]
     public async Task<IActionResult> CreateProduct([FromBody] CreateCatalogProductRequest request)
     {
         var res = await _catalogProductService.CreateCatalogProductAsync(request);
@@ -38,6 +41,7 @@ public class CatalogProductController : ControllerBase
     }
 
     [HttpPatch("{id}")]
+    [Authorize(Roles = nameof(UserRoles.Admin) + "," + nameof(UserRoles.Staff))]
     public async Task<IActionResult> UpdateProduct([FromRoute] Guid id, [FromBody] UpdateCatalogProductRequest request)
     {
         var res = await _catalogProductService.UpdateCatalogProductAsync(id, request);
@@ -45,6 +49,7 @@ public class CatalogProductController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = nameof(UserRoles.Admin) + "," + nameof(UserRoles.Staff))]
     public async Task<IActionResult> DeleteProduct([FromRoute] Guid id)
     {
         var res = await _catalogProductService.DeleteCatalogProductAsync(id);

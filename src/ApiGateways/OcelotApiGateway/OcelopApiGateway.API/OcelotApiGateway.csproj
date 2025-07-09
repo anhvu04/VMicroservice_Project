@@ -5,10 +5,14 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>fc9dc38d-26c2-4550-8093-e5111a1aa7c4</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="MMLib.SwaggerForOcelot" Version="8.3.2" />
         <PackageReference Include="Ocelot" Version="23.3.3" />
+        <PackageReference Include="Ocelot.Cache.CacheManager" Version="23.3.3" />
+        <PackageReference Include="Ocelot.Provider.Polly" Version="23.3.3" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 

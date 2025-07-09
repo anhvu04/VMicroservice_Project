@@ -1,19 +1,23 @@
 services:
   #database section
-  product-db:
-    image: mysql:8.0.29
-  
-  customer-db:
-    image: postgres:alpine3.16
-  
   basket-db:
     image: redis:alpine
   
-  order-db:
+  customer-db:
+    image: postgres:alpine3.16
+    
+  identity-db:
     image: mcr.microsoft.com/mssql/server:2019-latest
   
   inventory-db:
     image: mongo
+  
+  order-db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+  
+  product-db:
+    image: mysql:8.0.29
+  
   
   #infrastructure section
   rabbitmq:
@@ -32,57 +36,71 @@ services:
     image: docker.elastic.co/kibana/kibana:7.17.2
   
   #microservices api section
-  product-api:
-    image: ${DOCKER_REGISTRY-}product-api:${PLATFORM:-linux}-${TAG:-latest}
+  basket-api:
+    image: ${DOCKER_REGISTRY-}basket-api:${PLATFORM:-linux}-${TAG:-latest}
     build:
       context: .
-      dockerfile: Services/Product/Product.API/Dockerfile
-  
+      dockerfile: Services/Basket/Basket.API/Dockerfile
+    
   customer-api:
     image: ${DOCKER_REGISTRY-}customer-api:${PLATFORM:-linux}-${TAG:-latest}
     build:
       context: .
       dockerfile: Services/Customer/Customer.API/Dockerfile
   
-  basket-api:
-    image: ${DOCKER_REGISTRY-}basket-api:${PLATFORM:-linux}-${TAG:-latest}
+  identity-api:
+    image: ${DOCKER_REGISTRY-}identity-api:${PLATFORM:-linux}-${TAG:-latest}
     build:
       context: .
-      dockerfile: Services/Basket/Basket.API/Dockerfile
-  
-  order-api:
-    image: ${DOCKER_REGISTRY-}order-api:${PLATFORM:-linux}-${TAG:-latest}
-    build:
-      context: .
-      dockerfile: Services/Ordering/Ordering.API/Dockerfile
+      dockerfile: Services/Identity/Identity.API/Dockerfile
   
   inventory-api:
     image: ${DOCKER_REGISTRY-}inventory-api:${PLATFORM:-linux}-${TAG:-latest}
     build:
       context: .
       dockerfile: Services/Inventory.Product/Inventory.Product.API/Dockerfile
+      
+  order-api:
+    image: ${DOCKER_REGISTRY-}order-api:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: Services/Ordering/Ordering.API/Dockerfile
+  
+  product-api:
+    image: ${DOCKER_REGISTRY-}product-api:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: Services/Product/Product.API/Dockerfile
+  
+  gateway-api:
+    image: ${DOCKER_REGISTRY-}gateway-api:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: ApiGateways/OcelotApiGateway/OcelopApiGateway.API/Dockerfile
 
 #network section
 networks:
-  default:
+  v-microservices:
     name: v-microservices
     driver: bridge
 
 #volumes section
 volumes:
-  sqlserver-data:
-    name: sqlserver-data
-  mysql-data:
-    name: mysql-data
-  postgres-data:
-    name: postgres-data
+  sqlserver-identity-data:
+    name: sqlserver-identity-data
+  sqlserver-order-data:
+    name: sqlserver-order-data
+  mysql-product-data:
+    name: mysql-product-data
+  postgres-customer-data:
+    name: postgres-customer-data
   portainer-data:
     name: portainer-data
   elasticsearch-data:
     name: elasticsearch-data
   jaeger-data:
     name: jaeger-data
-  mongo-data:
-    name: mongo-data
+  mongo-inventory-data:
+    name: mongo-inventory-data
   pgadmin-data:
     name: pgadmin-data

@@ -23,7 +23,6 @@ public static class ServiceExtensions
         builder.Services.AddControllers();
         builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
         builder.ConfigureRedisDb(configuration);
         builder.ConfigureMassTransit(configuration);
         builder.ConfigureDependencyInjection();

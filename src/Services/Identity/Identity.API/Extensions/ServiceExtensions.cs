@@ -12,7 +12,6 @@ public static class ServiceExtensions
         builder.Services.AddControllers();
         builder.Services.Configure<RouteOptions>(x => x.LowercaseUrls = true);
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
         builder.Services.AddApplication();
         builder.Services.AddPersistence(configuration);
         builder.Services.AddInfrastructure(configuration);

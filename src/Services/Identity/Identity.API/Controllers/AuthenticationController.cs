@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Identity.API.Controllers;
 
 [ApiController]
-[Route("api/auth")]
+[Route("v1/auth")]
 public class AuthenticationController(ISender sender) : ApiController(sender)
 {
     [HttpPost("login")]

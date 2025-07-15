@@ -11,6 +11,7 @@ using Product.Repositories.UnitOfWork;
 using Product.Services.Mapping;
 using Product.Services.Services.Implementation;
 using Product.Services.Services.Interfaces;
+using Shared.ConfigurationSettings;
 
 namespace Product.API.Extensions;
 
@@ -30,15 +31,17 @@ public static class ServiceExtensions
 
     private static void ConfigureProductDbContext(this WebApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        Console.WriteLine("ConnectionString: " + connectionString);
-        var connectionBuilder = new MySqlConnectionStringBuilder(connectionString!);
+        var databaseSettings = builder.Configuration.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>()
+                               ?? throw new Exception("DatabaseSettings is not configured properly");
+        Console.WriteLine("ConnectionString: " + databaseSettings.DefaultConnection);
+        var connectionBuilder = new MySqlConnectionStringBuilder(databaseSettings.DefaultConnection);
         builder.Services.AddDbContext<ProductContext>(options =>
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionBuilder.ConnectionString), e =>
-            {
-                e.MigrationsAssembly("Product.Repositories");
-                e.SchemaBehavior(MySqlSchemaBehavior.Ignore);
-            }));
+            options.UseMySql(databaseSettings.DefaultConnection,
+                ServerVersion.AutoDetect(connectionBuilder.ConnectionString), e =>
+                {
+                    e.MigrationsAssembly("Product.Repositories");
+                    e.SchemaBehavior(MySqlSchemaBehavior.Ignore);
+                }));
     }
 
     private static void ConfigureDependencyInjection(this WebApplicationBuilder builder)

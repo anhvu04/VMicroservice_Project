@@ -1,6 +1,6 @@
 namespace Shared.ConfigurationSettings;
 
-public class MongoDbConnection
+public class MongoDbSettings
 {
     public string Host { get; set; } = null!;
     public int Port { get; set; }

@@ -1,3 +1,4 @@
+using Infrastructure.Extensions.MongoDbExtensions;
 using Infrastructure.Middlewares;
 using Inventory.Product.API.GrpcServerServices;
 using Microsoft.Extensions.Options;
@@ -26,17 +27,15 @@ public static class ApplicationExtensions
         var services = scope.ServiceProvider;
         var mongoClient = services.GetRequiredService<IMongoClient>();
         var logger = services.GetRequiredService<ILogger<IMongoClient>>();
-        var mongoClientSettings = services.GetRequiredService<IOptions<MongoDbConnection>>().Value;
+        var databaseSettings = services.GetRequiredService<IOptions<DatabaseSettings>>().Value;
         try
         {
-            logger.LogInformation("Setting up MongoDB database: {DatabaseName}",
-                mongoClientSettings.DatabaseName);
-
-            var database = mongoClient.GetDatabase(mongoClientSettings.DatabaseName);
+            // Extract database name from connection string
+            string databaseName = databaseSettings.DefaultConnection.GetCollectionName();
+            var database = mongoClient.GetDatabase(databaseName);
             Migrate(database);
 
-            logger.LogInformation("MongoDB setup completed for database: {DatabaseName}",
-                mongoClientSettings.DatabaseName);
+            logger.LogInformation("MongoDB setup completed for database: {DatabaseName}", databaseName);
         }
         catch (Exception e)
         {

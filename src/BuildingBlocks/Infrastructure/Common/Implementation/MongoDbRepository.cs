@@ -1,5 +1,6 @@
 using Contracts.Common.Interfaces;
 using Contracts.Domains;
+using Contracts.Domains.Entity;
 using Infrastructure.Extensions.MongoDbExtensions;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -11,9 +12,10 @@ public class MongoDbRepository<T> : IMongoDbRepository<T> where T : MongoEntity
 {
     private readonly IMongoDatabase _database;
 
-    public MongoDbRepository(IMongoClient client, IOptions<MongoDbConnection> settings)
+    public MongoDbRepository(IMongoClient client, IOptions<DatabaseSettings> settings)
     {
-        _database = client.GetDatabase(settings.Value.DatabaseName);
+        var databaseName = settings.Value.DefaultConnection.GetCollectionName();
+        _database = client.GetDatabase(databaseName);
     }
 
     public IMongoCollection<T> FindAll(ReadPreference? readPreference = null)

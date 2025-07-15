@@ -3,7 +3,6 @@ using Basket.Repositories.Repositories.Implementation;
 using Basket.Repositories.Repositories.Interfaces;
 using Basket.Services.Services.Implementation;
 using Basket.Services.Services.Interfaces;
-using Basket.Services.Settings.Redis;
 using EventBus.Messages.IntegrationEvent.Event;
 using Infrastructure.ConfigurationService;
 using Inventory.Product.API.Protos;
@@ -46,29 +45,41 @@ public static class ServiceExtensions
 
     private static void ConfigureRedisDb(this WebApplicationBuilder builder, IConfiguration configuration)
     {
+        var databaseSettings = configuration.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>() ??
+                               throw new InvalidOperationException("DatabaseSettings is not configured properly.");
+
         builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
         {
-            var redisSettings = configuration.GetSection("ConnectionStrings:RedisConnection").Get<RedisSettings>()
-                                ?? throw new InvalidOperationException("RedisConnection is not configured properly.");
-            return ConnectionMultiplexer.Connect(new ConfigurationOptions()
-            {
-                EndPoints = { { redisSettings.EndPoints, redisSettings.Port } },
-                User = redisSettings.User,
-                Password = redisSettings.Password
-            });
+            // var redisSettings = configuration
+            //                         .GetSection($"{nameof(DatabaseSettings)}:{nameof(DatabaseSettings.DefaultConnection)}")
+            //                         .Get<RedisSettings>() ??
+            //                     throw new InvalidOperationException("DatabaseSettings is not configured properly.");
+            //
+            //
+            // return ConnectionMultiplexer.Connect(new ConfigurationOptions()
+            // {
+            //     EndPoints = { { redisSettings.EndPoints, redisSettings.Port } },
+            //     User = redisSettings.User,
+            //     Password = redisSettings.Password
+            // });
+
+            Console.WriteLine("Redis Connection: " + databaseSettings.DefaultConnection);
+
+            return ConnectionMultiplexer.Connect(databaseSettings.DefaultConnection);
         });
     }
 
     private static void ConfigureMassTransit(this WebApplicationBuilder builder, IConfiguration configuration)
     {
-        builder.Services.Configure<EventBusSettings>(configuration.GetSection("EventBusSettings"));
-        var eventBusSettings = configuration.GetSection("EventBusSettings").Get<EventBusSettings>()
+        builder.Services.Configure<EventBusSettings>(configuration.GetSection(nameof(EventBusSettings)));
+        var eventBusSettings = configuration.GetSection(nameof(EventBusSettings)).Get<EventBusSettings>()
                                ?? throw new InvalidOperationException("EventBusSettings is not configured properly.");
 
         builder.Services.TryAddSingleton(KebabCaseEndpointNameFormatter
             .Instance); // Ex: routing key: BasketCheckoutEvent -> basket-checkout-event
 
-        Console.WriteLine(eventBusSettings.Host + ":" + eventBusSettings.Port + ":" + eventBusSettings.Username + ":" +
+        Console.WriteLine("RabbitMQ Connection: " + eventBusSettings.Host + ":" + eventBusSettings.Port + ":" +
+                          eventBusSettings.Username + ":" +
                           eventBusSettings.Password);
 
         builder.Services.AddMassTransit(config =>

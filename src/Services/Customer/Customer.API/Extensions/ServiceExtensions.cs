@@ -8,6 +8,7 @@ using Infrastructure.Common.Implementation;
 using Infrastructure.ConfigurationService;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using Shared.ConfigurationSettings;
 
 namespace Customer.API.Extensions;
 
@@ -27,10 +28,13 @@ public static class ServiceExtensions
 
     private static void ConfigureCustomerDbContext(this WebApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        Console.WriteLine($"ConnectionString: {connectionString}");
+        var databaseSettings = builder.Configuration.GetSection(nameof(DatabaseSettings))
+            .Get<DatabaseSettings>() ?? throw new Exception("DatabaseSettings is not configured properly.");
+
+        Console.WriteLine($"ConnectionString: {databaseSettings.DefaultConnection}");
         builder.Services.AddDbContext<CustomerContext>(options =>
-            options.UseNpgsql(connectionString, e => { e.MigrationsAssembly("Customer.Repositories"); }));
+            options.UseNpgsql(databaseSettings.DefaultConnection,
+                e => { e.MigrationsAssembly("Customer.Repositories"); }));
     }
 
     private static void ConfigureDependencyInjection(this WebApplicationBuilder builder)

@@ -41,19 +41,13 @@ public static class ServiceExtensions
 
     private static void ConfigureInventoryDb(this WebApplicationBuilder builder)
     {
-        var mongoDbSettings =
-            builder.Configuration.GetSection("ConnectionStrings:MongoDbConnection").Get<MongoDbConnection>() ??
-            throw new Exception("MongoDbSettings is not configured properly");
-        builder.Services.Configure<MongoDbConnection>(
-            builder.Configuration.GetSection("ConnectionStrings:MongoDbConnection"));
+        var databaseSettings = builder.Configuration
+            .GetSection(nameof(DatabaseSettings))
+            .Get<DatabaseSettings>() ?? throw new Exception("DatabaseSettings is not configured properly");
+        builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection(nameof(DatabaseSettings)));
 
-        string encodedPassword = Uri.EscapeDataString(mongoDbSettings.Password);
-
-        var connectionString =
-            $"mongodb://{mongoDbSettings.Username}:{encodedPassword}@{mongoDbSettings.Host}:{mongoDbSettings.Port}/{mongoDbSettings.DatabaseName}?authSource=admin";
-        Console.WriteLine($"ConnectionString: {connectionString}");
-
-        builder.Services.AddSingleton<IMongoClient>(new MongoClient(connectionString))
+        Console.WriteLine($"ConnectionString: {databaseSettings.DefaultConnection}");
+        builder.Services.AddSingleton<IMongoClient>(new MongoClient(databaseSettings.DefaultConnection))
             .AddScoped(x => x.GetService<IMongoClient>()!.StartSession());
     }
 

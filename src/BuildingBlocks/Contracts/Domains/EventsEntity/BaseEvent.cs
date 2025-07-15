@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Contracts.Common.Events;
+namespace Contracts.Domains.EventsEntity;
 
 public class BaseEvent : INotification
 {

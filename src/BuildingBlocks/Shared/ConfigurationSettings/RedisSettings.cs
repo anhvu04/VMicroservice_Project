@@ -1,4 +1,4 @@
-namespace Basket.Services.Settings.Redis;
+namespace Shared.ConfigurationSettings;
 
 public class RedisSettings
 {

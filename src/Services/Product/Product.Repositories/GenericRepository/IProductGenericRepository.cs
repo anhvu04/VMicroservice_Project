@@ -1,6 +1,5 @@
 using Contracts.Common.Interfaces;
-using Contracts.Domains;
-using Microsoft.EntityFrameworkCore;
+using Contracts.Domains.Entity;
 using Product.Repositories.Persistence;
 
 namespace Product.Repositories.GenericRepository;

@@ -1,6 +1,6 @@
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Contracts.Domains;
+namespace Contracts.Domains.Entity;
 
 public abstract class MongoEntity
 {

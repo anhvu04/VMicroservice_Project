@@ -1,4 +1,5 @@
 using Contracts.Domains;
+using Contracts.Domains.Entity;
 using Infrastructure.Extensions.MongoDbExtensions;
 
 namespace Inventory.Product.Repositories.Entities;

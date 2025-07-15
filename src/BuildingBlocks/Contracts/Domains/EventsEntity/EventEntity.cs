@@ -1,8 +1,7 @@
-using Contracts.Common.Interfaces;
 using Contracts.Common.Interfaces.MediatR;
-using Contracts.Domains;
+using Contracts.Domains.Entity;
 
-namespace Contracts.Common.Events;
+namespace Contracts.Domains.EventsEntity;
 
 public class EventEntity<T> : EntityBase<T>, IEventEntity<T>
 {

@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Contracts.Domains;
+using Contracts.Domains.Entity;
 
 namespace Customer.Repositories.Entities;
 

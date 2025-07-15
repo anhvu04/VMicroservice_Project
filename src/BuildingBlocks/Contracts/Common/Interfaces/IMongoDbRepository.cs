@@ -1,4 +1,5 @@
 using Contracts.Domains;
+using Contracts.Domains.Entity;
 using MongoDB.Driver;
 
 namespace Contracts.Common.Interfaces;

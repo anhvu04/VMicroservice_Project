@@ -1,8 +1,8 @@
 using Contracts.Domains.Interfaces;
 
-namespace Contracts.Common.Events;
+namespace Contracts.Domains.Entity;
 
-public class AuditableEventEntity<T> : EventEntity<T>, IEntityAuditBase<T>
+public abstract class EntityAuditBase<TKey> : EntityBase<TKey>, IEntityAuditBase<TKey>
 {
     public Guid CreatedBy { get; set; }
     public Guid? UpdatedBy { get; set; }

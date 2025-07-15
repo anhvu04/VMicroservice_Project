@@ -1,8 +1,8 @@
 using Contracts.Domains.Interfaces;
 
-namespace Contracts.Common.Events;
+namespace Contracts.Domains.Entity;
 
-public class DateTrackingEventEntity<T> : EventEntity<T>, IDateTracking
+public abstract class EntityDateBase<TKey> : EntityBase<TKey>, IDateTracking
 {
     public DateTimeOffset CreatedDate { get; set; }
     public DateTimeOffset? UpdatedDate { get; set; }

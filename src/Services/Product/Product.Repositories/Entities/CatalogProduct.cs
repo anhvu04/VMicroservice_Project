@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using Contracts.Domains;
+using Contracts.Domains.Entity;
 
 namespace Product.Repositories.Entities;
 

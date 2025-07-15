@@ -1,6 +1,6 @@
 using Contracts.Domains.Interfaces;
 
-namespace Contracts.Domains;
+namespace Contracts.Domains.Entity;
 
 public abstract class EntityBase<TKey> : IEntityBase<TKey>
 {

@@ -1,4 +1,5 @@
 using Contracts.Domains;
+using Contracts.Domains.Entity;
 using Customer.Repositories.Persistence;
 using Infrastructure.Common.Implementation;
 

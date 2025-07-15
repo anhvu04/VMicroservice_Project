@@ -1,5 +1,6 @@
 using Contracts.Common.Interfaces;
 using Contracts.Domains;
+using Contracts.Domains.Entity;
 using Customer.Repositories.Persistence;
 
 namespace Customer.Repositories.GenericRepository;

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.ConfigurationSettings;
 
 namespace Identity.Persistence.Extensions;
 
@@ -20,9 +21,10 @@ public static class ServiceExtensions
     {
         service.AddDbContextPool<IdentityContext>(options =>
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            Console.WriteLine(connectionString);
-            options.UseSqlServer(connectionString);
+            var databaseSettings = configuration.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>() ??
+                                   throw new Exception("Database settings is not configured properly.");
+            Console.WriteLine(databaseSettings.DefaultConnection);
+            options.UseSqlServer(databaseSettings.DefaultConnection);
         });
     }
 

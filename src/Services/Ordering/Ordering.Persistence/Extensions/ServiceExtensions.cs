@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Ordering.Domain.UnitOfWork;
 using Ordering.Persistence.Persistence;
 using Ordering.Persistence.UnitOfWork;
+using Shared.ConfigurationSettings;
 
 namespace Ordering.Persistence.Extensions;
 
@@ -22,9 +23,10 @@ public static class ServiceExtensions
     {
         service.AddDbContextPool<OrderingContext>(options =>
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            Console.WriteLine(connectionString);
-            options.UseSqlServer(connectionString);
+            var databaseSettings = configuration.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>() ??
+                                   throw new Exception("DatabaseSettings is not configured properly");
+            Console.WriteLine("Connection string: " + databaseSettings.DefaultConnection);
+            options.UseSqlServer(databaseSettings.DefaultConnection);
         });
     }
 

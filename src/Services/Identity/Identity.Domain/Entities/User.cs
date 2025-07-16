@@ -1,4 +1,5 @@
 using Contracts.Domains;
+using Contracts.Domains.Entity;
 using Shared.Enums;
 
 namespace Identity.Domain.Entities;

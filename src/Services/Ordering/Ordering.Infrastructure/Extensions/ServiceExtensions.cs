@@ -10,7 +10,7 @@ namespace Ordering.Infrastructure.Extensions;
 
 public static class ServiceExtensions
 {
-    public static void AddInfrastructures(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.ConfigureMassTransit(configuration);
     }
@@ -46,7 +46,7 @@ public static class ServiceExtensions
                             x =>
                             {
                                 x.RoutingKey = "basket-checkout-routing-key"; // Set ở consumer nghĩa là routing key = binding key
-                                x.ExchangeType = "direct";
+                                x.ExchangeType = ExchangeType.Direct.ToString();
                             });
                     });
 

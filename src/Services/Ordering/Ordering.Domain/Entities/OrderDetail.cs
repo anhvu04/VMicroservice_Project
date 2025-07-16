@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Contracts.Domains;
+using Contracts.Domains.Entity;
 
 namespace Ordering.Domain.Entities;
 

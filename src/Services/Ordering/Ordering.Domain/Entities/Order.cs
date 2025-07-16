@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using Contracts.Common.Events;
+using Contracts.Domains.EventsEntity;
 using Ordering.Domain.OrderAggregate.Events;
 
 namespace Ordering.Domain.Entities;

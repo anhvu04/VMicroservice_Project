@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>17659641-15ae-4adc-bf61-142b2c0fb196</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="grpc.aspnetcore" Version="2.71.0"/>
+        <PackageReference Include="Grpc.Tools" Version="2.72.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\BuildingBlocks\Common.Logging\Common.Logging.csproj"/>
+        <ProjectReference Include="..\..\..\BuildingBlocks\Contracts\Contracts.csproj"/>
+        <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBus.Messages\EventBus.Messages.csproj"/>
+        <ProjectReference Include="..\..\..\BuildingBlocks\Infrastructure\Infrastructure.csproj"/>
+        <ProjectReference Include="..\..\..\BuildingBlocks\Shared\Shared.csproj"/>
+        <ProjectReference Include="..\Inventory.Product.Application\Inventory.Product.Application.csproj" />
+        <ProjectReference Include="..\Inventory.Product.Domain\Inventory.Product.Domain.csproj" />
+        <ProjectReference Include="..\Inventory.Product.Infrastructure\Inventory.Product.Infrastructure.csproj" />
+        <ProjectReference Include="..\Inventory.Product.Persistence\Inventory.Product.Persistence.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Protobuf Include="Protos\stock.proto" GrpcServices="Server">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Protobuf>
+        <None Remove="Protos\stock.proto" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Grpc\" />
+    </ItemGroup>
+
+</Project>

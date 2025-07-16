@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Ordering.Application.Usecases.Order.Common;
 using Ordering.Domain.UnitOfWork;
 using Shared.Utils;
-using Shared.Utils.Pagination;
 
 namespace Ordering.Application.Usecases.Order.Query.GetOrders;
 
@@ -34,7 +33,11 @@ public class GetOrdersQueryHandler : IQueryHandler<GetOrdersQuery, PaginationRes
 
         orders = orders.Where(predicate);
 
-        orders = ApplySorting(orders, request);
+        if (string.IsNullOrWhiteSpace(request.OrderBy))
+        {
+            orders = ApplySorting(orders, request);
+        }
+
         var res = await orders.ProjectToPaginatedListAsync<Domain.Entities.Order, OrderModel>(request);
         return Result.Success(res);
     }
@@ -45,7 +48,7 @@ public class GetOrdersQueryHandler : IQueryHandler<GetOrdersQuery, PaginationRes
     private static IQueryable<Domain.Entities.Order> ApplySorting(IQueryable<Domain.Entities.Order> orders,
         GetOrdersQuery request)
     {
-        var orderBy = request.OrderBy;
+        var orderBy = request.OrderBy!;
         var isDescending = request.IsDescending;
 
         return orderBy.ToLower().Replace(" ", "") switch

@@ -23,8 +23,4 @@
         <ProjectReference Include="..\Basket.Persistence\Basket.Persistence.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="GrpcClientServices\" />
-    </ItemGroup>
-
 </Project>

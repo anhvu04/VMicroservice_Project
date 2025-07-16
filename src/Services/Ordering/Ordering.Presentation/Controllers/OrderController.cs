@@ -7,7 +7,7 @@ using Ordering.Application.Usecases.Order.Query.GetOrder;
 using Ordering.Application.Usecases.Order.Query.GetOrders;
 using Shared.Enums;
 
-namespace Ordering.API.Controllers;
+namespace Ordering.Presentation.Controllers;
 
 [ApiController]
 [Route("v1/orders")]

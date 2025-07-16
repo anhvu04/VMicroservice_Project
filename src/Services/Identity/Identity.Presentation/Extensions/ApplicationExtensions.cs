@@ -1,6 +1,6 @@
 using Infrastructure.Middlewares;
 
-namespace Identity.API.Extensions;
+namespace Identity.Presentation.Extensions;
 
 public static class ApplicationExtensions
 {

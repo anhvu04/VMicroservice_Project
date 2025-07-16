@@ -3,7 +3,7 @@ using Identity.Application.Usecases.Authentication.Register;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Identity.API.Controllers;
+namespace Identity.Presentation.Controllers;
 
 [ApiController]
 [Route("v1/auth")]

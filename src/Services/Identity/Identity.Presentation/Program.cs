@@ -1,8 +1,8 @@
 using Common.Logging;
-using Identity.API.Extensions;
+using Identity.Presentation.Extensions;
 using Serilog;
 
-namespace Identity.API;
+namespace Identity.Presentation;
 
 public class Program
 {

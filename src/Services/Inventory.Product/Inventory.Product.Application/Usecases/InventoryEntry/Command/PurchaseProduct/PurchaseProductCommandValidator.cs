@@ -6,6 +6,6 @@ public class PurchaseProductCommandValidator : AbstractValidator<PurchaseProduct
 {
     public PurchaseProductCommandValidator()
     {
-        RuleFor(x => x.Quantity).Must(x => x > 0).WithMessage("Quantity must be greater than 0");
+        RuleFor(x => x.Quantity).GreaterThan(0).WithMessage("Quantity must be greater than 0");
     }
 }

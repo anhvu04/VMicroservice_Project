@@ -1,9 +1,9 @@
 using Common.Logging;
-using Ordering.API.Extensions;
+using Ordering.Presentation.Extensions;
 using Ordering.Persistence.Persistence;
 using Serilog;
 
-namespace Ordering.API;
+namespace Ordering.Presentation;
 
 public class Program
 {

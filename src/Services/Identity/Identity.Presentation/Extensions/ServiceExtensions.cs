@@ -3,7 +3,7 @@ using Identity.Infrastructure.Extensions;
 using Identity.Persistence.Extensions;
 using Infrastructure.ConfigurationService;
 
-namespace Identity.API.Extensions;
+namespace Identity.Presentation.Extensions;
 
 public static class ServiceExtensions
 {

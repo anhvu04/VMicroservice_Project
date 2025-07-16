@@ -2,7 +2,7 @@ using Infrastructure.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using Ordering.Persistence.Persistence;
 
-namespace Ordering.API.Extensions;
+namespace Ordering.Presentation.Extensions;
 
 public static class ApplicationExtensions
 {

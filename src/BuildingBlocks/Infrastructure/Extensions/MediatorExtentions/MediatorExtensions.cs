@@ -1,7 +1,5 @@
-using Contracts.Common.Events;
-using Contracts.Common.Interfaces;
+using Contracts.Domains.EventsEntity;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Extensions.MediatorExtentions;
 

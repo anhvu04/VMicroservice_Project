@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Basket.Application\Basket.Application.csproj"/>
+        <ProjectReference Include="..\Basket.Domain\Basket.Domain.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="grpc.aspnetcore" Version="2.71.0"/>
+        <PackageReference Include="Grpc.Tools" Version="2.72.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Protobuf Include="..\..\Inventory.Product\Inventory.Product.Presentation\Grpc\Protos\inventory_entries.proto">
+        <Link>Grpc\Protos\inventory_entries.proto</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Protobuf>
+      <None Remove="Grpc\Protos\list_products.proto" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Protobuf Include="..\..\Product\Product.Presentation\Grpc\Protos\products.proto">
+        <Link>Grpc\Protos\products.proto</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Protobuf>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Protobuf Include="..\..\ScheduledJob\ScheduledJob.Presentation\Grpc\Protos\cart_notification_schedule.proto">
+        <Link>Grpc\Protos\cart_notification_schedule.proto</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Protobuf>
+    </ItemGroup>
+
+</Project>

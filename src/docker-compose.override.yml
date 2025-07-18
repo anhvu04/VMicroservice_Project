@@ -1,48 +1,70 @@
 services:
-  #product-db
-  product-db:
-    container_name: product-db
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  #basket-db
+  basket-db:
+    container_name: basket-db
+    command: redis-server --requirepass ${BASKET_DB_PASSWORD}
     env_file:
       - .env
     restart: always
     ports:
-      - "3307:3306"
-    volumes:
-      - mysql-data:/var/lib/mysql
+      - "6380:6379"
+    networks:
+      - v-microservices
   
   #customer-db
   customer-db:
     container_name: customer-db
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${CUSTOMER_DB_USER}
+      POSTGRES_PASSWORD: ${CUSTOMER_DB_PASSWORD}
+      POSTGRES_DB: ${CUSTOMER_DB}
     env_file:
       - .env
     restart: always
     ports:
       - "5433:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
-  
-  #basket-db
-  basket-db:
-    container_name: basket-db
+      - postgres-customer-data:/var/lib/postgresql/data
+    networks:
+      - v-microservices
+        
+  #identity-db
+  identity-db:
+    container_name: identity-db
     environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      MSSQL_SA_PASSWORD: ${IDENTITY_DB_PASSWORD}
+      ACCEPT_EULA: "Y"
     env_file:
       - .env
     restart: always
     ports:
-      - "6380:6379"
+      - "1435:1433"
+    volumes:
+      - sqlserver-identity-data:/var/lib/sqlserver/data
+    networks:
+      - v-microservices
+        
+  #inventory-db
+  inventory-db:
+    container_name: inventory-db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${INVENTORY_DB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${INVENTORY_DB_ROOT_PASSWORD}
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-inventory-data:/var/lib/mongo/data
+    networks:
+      - v-microservices
   
   #order-db
   order-db:
     container_name: order-db
     environment:
-      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_SA_PASSWORD: ${ORDER_DB_PASSWORD}
       ACCEPT_EULA: "Y"
     env_file:
       - .env
@@ -50,21 +72,24 @@ services:
     ports:
       - "1434:1433"
     volumes:
-      - sqlserver-data:/var/lib/sqlserver/data
+      -  sqlserver-order-data:/var/lib/sqlserver/data
+    networks:
+      - v-microservices
   
-  #inventory-db
-  inventory-db:
-    container_name: inventory-db
+  #product-db
+  product-db:
+    container_name: product-db
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${PRODUCT_DB_ROOT_PASSWORD}
     env_file:
       - .env
     restart: always
     ports:
-      - "27018:27017"
+      - "3307:3306"
     volumes:
-      - mongo-data:/var/lib/mongo/data
+      - mysql-product-data:/var/lib/mysql
+    networks:
+      - v-microservices
   
   #rabbitmq
   rabbitmq:
@@ -138,32 +163,6 @@ services:
     depends_on:
       - elasticsearch
   
-  #product-api
-  product-api:
-    container_name: product-api
-    environment:
-      - ConnectionStrings__DefaultConnection=${PRODUCT_API_CONNECTION_STRING}
-    env_file:
-      - .env
-    depends_on:
-      - product-db
-    ports:
-      - "6002:8080"
-    restart: always
-  
-  #customer-api
-  customer-api:
-    container_name: customer-api
-    environment:
-      - ConnectionStrings__DefaultConnection=${CUSTOMER_API_CONNECTION_STRING}
-    env_file:
-      - .env
-    depends_on:
-      - customer-db
-    ports:
-      - "6003:8080"
-    restart: always
-  
   #basket-api
   basket-api:
     container_name: basket-api
@@ -179,6 +178,57 @@ services:
       - rabbitmq
     ports:
       - "6004:8080"
+    networks:
+      - v-microservices
+    restart: always
+  
+  #customer-api
+  customer-api:
+    container_name: customer-api
+    environment:
+      - ConnectionStrings__DefaultConnection=${CUSTOMER_API_CONNECTION_STRING}
+    env_file:
+      - .env
+    depends_on:
+      - customer-db
+    ports:
+      - "6003:8080"
+    networks:
+      - v-microservices
+    restart: always
+  
+  #identity-api
+  identity-api:
+    container_name: identity-api
+    environment:
+      - ConnectionStrings__DefaultConnection=${IDENTITY_API_CONNECTION_STRING}
+    env_file:
+      - .env
+    depends_on:
+      - identity-db
+    ports:
+      - "6001:8080"
+    networks:
+      - v-microservices
+    restart: always
+  
+  #inventory-api
+  inventory-api:
+    container_name: inventory-api
+    environment:
+      - ConnectionStrings__MongoDbConnection__Host=${INVENTORY_API_HOST}
+      - ConnectionStrings__MongoDbConnection__Port=${INVENTORY_API_PORT}
+      - ConnectionStrings__MongoDbConnection__Username=${INVENTORY_API_USERNAME}
+      - ConnectionStrings__MongoDbConnection__Password=${INVENTORY_API_PASSWORD}
+      - ConnectionStrings__MongoDbConnection__DatabaseName=${INVENTORY_API_DATABASENAME}
+    env_file:
+      - .env
+    depends_on:
+      - inventory-db
+    ports:
+      - "6006:8080"
+    networks:
+      - v-microservices
     restart: always
   
   #order-api
@@ -193,4 +243,40 @@ services:
       - rabbitmq
     ports:
       - "6005:8080"
+    networks:
+      - v-microservices
+    restart: always
+  
+  #product-api
+  product-api:
+    container_name: product-api
+    environment:
+      - ConnectionStrings__DefaultConnection=${PRODUCT_API_CONNECTION_STRING}
+    env_file:
+      - .env
+    depends_on:
+      - product-db
+    ports:
+      - "6002:8080"
+    networks:
+      - v-microservices
+    restart: always
+  
+  
+  #gateway-api
+  gateway-api:
+    container_name: gateway-api
+    env_file:
+      - .gateway.env
+    depends_on:
+      - basket-api
+      - customer-api
+      - identity-api
+      - inventory-api
+      - order-api
+      - product-api
+    ports:
+      - "6007:8080"
+    networks:
+      - v-microservices
     restart: always

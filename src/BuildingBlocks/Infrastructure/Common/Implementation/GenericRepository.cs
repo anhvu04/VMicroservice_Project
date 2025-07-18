@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Contracts.Common.Interfaces;
 using Contracts.Domains;
+using Contracts.Domains.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 

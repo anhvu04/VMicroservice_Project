@@ -14,12 +14,6 @@ public class OrderingContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
-
-        // Order
-        modelBuilder.Entity<Order>().Property(x => x.OrderStatus).HasConversion(x => x.ToString(),
-            x => (OrderStatus)Enum.Parse(typeof(OrderStatus), x));
-        modelBuilder.Entity<Order>().Property(x => x.PaymentMethod).HasConversion(x => x.ToString(),
-            x => (PaymentMethod)Enum.Parse(typeof(PaymentMethod), x));
+        modelBuilder.ApplyConfigurationsFromAssembly(AssemblyReference.Assembly);
     }
 }

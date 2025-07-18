@@ -1,6 +1,5 @@
 using Common.Logging;
 using Inventory.Product.Presentation.Extensions;
-using Inventory.Product.Presentation.GrpcServerServices;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Serilog;
 using Shared.ConfigurationSettings;

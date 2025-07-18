@@ -9,7 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="grpc.aspnetcore" Version="2.71.0"/>
         <PackageReference Include="Grpc.Tools" Version="2.72.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -30,14 +29,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="Protos\stock.proto" GrpcServices="Server">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Protobuf>
         <None Remove="Protos\stock.proto" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Grpc\" />
+      <Protobuf Include="Grpc\Protos\inventory_entries.proto">
+        <Generator>MSBuild:Compile</Generator>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Protobuf>
     </ItemGroup>
 
 </Project>

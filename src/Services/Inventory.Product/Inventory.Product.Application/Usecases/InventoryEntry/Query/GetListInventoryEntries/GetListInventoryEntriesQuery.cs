@@ -3,9 +3,9 @@ using Inventory.Product.Application.Usecases.InventoryEntry.Common;
 using Shared.Utils;
 using Shared.Utils.Params;
 
-namespace Inventory.Product.Application.Usecases.InventoryEntry.Query.GetListInventoryEntry;
+namespace Inventory.Product.Application.Usecases.InventoryEntry.Query.GetListInventoryEntries;
 
-public class GetListInventoryEntryQuery : BaseQuery, IQuery<PaginationResult<GetInventoryEntryResponse>>
+public class GetListInventoryEntriesQuery : BaseQuery, IQuery<PaginationResult<GetInventoryEntryResponse>>
 {
     public Guid ProductId { get; set; }
 }

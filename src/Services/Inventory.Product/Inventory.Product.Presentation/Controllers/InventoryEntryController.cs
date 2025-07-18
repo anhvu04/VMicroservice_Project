@@ -1,6 +1,6 @@
 using Inventory.Product.Application.Usecases.InventoryEntry.Command.PurchaseProduct;
 using Inventory.Product.Application.Usecases.InventoryEntry.Query.GetInventoryEntryById;
-using Inventory.Product.Application.Usecases.InventoryEntry.Query.GetListInventoryEntry;
+using Inventory.Product.Application.Usecases.InventoryEntry.Query.GetListInventoryEntries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +14,7 @@ public class InventoryEntryController(ISender sender) : ApiController(sender)
     [HttpGet]
     [Route("v1/inventory-entries")]
     [Authorize(Roles = nameof(UserRoles.Admin) + "," + nameof(UserRoles.Staff))]
-    public async Task<IActionResult> GetInventoryEntries([FromQuery] GetListInventoryEntryQuery request)
+    public async Task<IActionResult> GetInventoryEntries([FromQuery] GetListInventoryEntriesQuery request)
     {
         var result = await Sender.Send(request);
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result);

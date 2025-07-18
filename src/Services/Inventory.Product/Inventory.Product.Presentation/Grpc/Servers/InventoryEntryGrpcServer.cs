@@ -1,15 +1,15 @@
 using Grpc.Core;
-using Inventory.Product.API.Protos;
 using Inventory.Product.Application.Usecases.InventoryEntry.Query.GetStockByProductId;
+using Inventory.Product.Presentation.Grpc.Protos;
 using MediatR;
 
-namespace Inventory.Product.Presentation.GrpcServerServices;
+namespace Inventory.Product.Presentation.Grpc.Servers;
 
-public class GetStockGrpcServerService : StockProtoService.StockProtoServiceBase
+public class InventoryEntryGrpcServer : InventoryEntryProtoService.InventoryEntryProtoServiceBase
 {
     private readonly ISender _sender;
 
-    public GetStockGrpcServerService(ISender sender)
+    public InventoryEntryGrpcServer(ISender sender)
     {
         _sender = sender;
     }
@@ -20,7 +20,7 @@ public class GetStockGrpcServerService : StockProtoService.StockProtoServiceBase
             context.CancellationToken);
         if (!res.IsSuccess)
         {
-            throw new RpcException(new Status(StatusCode.NotFound, res.Error!));
+            throw new RpcException(new Status(StatusCode.Unavailable, res.Error!));
         }
 
         return new GetStockResponse { Stock = res.Value!.Quantity };

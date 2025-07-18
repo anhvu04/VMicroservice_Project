@@ -1,6 +1,6 @@
 using Infrastructure.Extensions.MongoDbExtensions;
 using Infrastructure.Middlewares;
-using Inventory.Product.Presentation.GrpcServerServices;
+using Inventory.Product.Presentation.Grpc.Servers;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Shared.ConfigurationSettings;
@@ -17,7 +17,7 @@ public static class ApplicationExtensions
         app.UseRouting();
         app.MapControllers();
         app.UseAuthorization();
-        app.MapGrpcService<GetStockGrpcServerService>();
+        app.MapGrpcService<InventoryEntryGrpcServer>();
         app.MigrateDatabase();
     }
 

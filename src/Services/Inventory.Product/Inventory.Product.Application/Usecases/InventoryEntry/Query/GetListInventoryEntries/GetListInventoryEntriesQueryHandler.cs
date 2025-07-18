@@ -6,22 +6,22 @@ using MapsterMapper;
 using MongoDB.Driver;
 using Shared.Utils;
 
-namespace Inventory.Product.Application.Usecases.InventoryEntry.Query.GetListInventoryEntry;
+namespace Inventory.Product.Application.Usecases.InventoryEntry.Query.GetListInventoryEntries;
 
 public class
-    GetListInventoryEntryQueryHandler : IQueryHandler<GetListInventoryEntryQuery,
+    GetListInventoryEntriesQueryHandler : IQueryHandler<GetListInventoryEntriesQuery,
     PaginationResult<GetInventoryEntryResponse>>
 {
     private readonly IInventoryEntryRepository _inventoryEntryRepository;
     private readonly IMapper _mapper;
 
-    public GetListInventoryEntryQueryHandler(IInventoryEntryRepository inventoryEntryRepository, IMapper mapper)
+    public GetListInventoryEntriesQueryHandler(IInventoryEntryRepository inventoryEntryRepository, IMapper mapper)
     {
         _inventoryEntryRepository = inventoryEntryRepository;
         _mapper = mapper;
     }
 
-    public async Task<Result<PaginationResult<GetInventoryEntryResponse>>> Handle(GetListInventoryEntryQuery request,
+    public async Task<Result<PaginationResult<GetInventoryEntryResponse>>> Handle(GetListInventoryEntriesQuery request,
         CancellationToken cancellationToken)
     {
         var inventoryEntries = _inventoryEntryRepository.FindAll();

@@ -1,26 +1,25 @@
 using System.Linq.Expressions;
-using Contracts.Common.Interfaces;
 using Contracts.Common.Interfaces.MediatR;
 using Product.Application.Usecases.CatalogProduct.Common;
 using Product.Domain.UnitOfWork;
 using Shared.Utils;
 using Shared.Utils.Params;
 
-namespace Product.Application.Usecases.CatalogProduct.Query.GetListCatalogProduct;
+namespace Product.Application.Usecases.CatalogProduct.Query.GetListCatalogProducts;
 
 public class
-    GetListCatalogProductQueryHandler : IQueryHandler<GetListCatalogProductQuery,
+    GetListCatalogProductsQueryHandler : IQueryHandler<GetListCatalogProductsQuery,
     PaginationResult<GetCatalogProductResponse>>
 {
     private readonly IProductUnitOfWork _productUnitOfWork;
 
-    public GetListCatalogProductQueryHandler(IProductUnitOfWork productUnitOfWork)
+    public GetListCatalogProductsQueryHandler(IProductUnitOfWork productUnitOfWork)
     {
         _productUnitOfWork = productUnitOfWork;
     }
 
 
-    public async Task<Result<PaginationResult<GetCatalogProductResponse>>> Handle(GetListCatalogProductQuery request,
+    public async Task<Result<PaginationResult<GetCatalogProductResponse>>> Handle(GetListCatalogProductsQuery request,
         CancellationToken cancellationToken)
     {
         var query = _productUnitOfWork.CatalogProduct.FindAll();

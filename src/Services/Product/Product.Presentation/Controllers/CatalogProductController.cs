@@ -5,7 +5,7 @@ using Product.Application.Usecases.CatalogProduct.Command.CreateCatalogProduct;
 using Product.Application.Usecases.CatalogProduct.Command.DeleteCatalogProduct;
 using Product.Application.Usecases.CatalogProduct.Command.UpdateCatalogProduct;
 using Product.Application.Usecases.CatalogProduct.Query.GetCatalogProductById;
-using Product.Application.Usecases.CatalogProduct.Query.GetListCatalogProduct;
+using Product.Application.Usecases.CatalogProduct.Query.GetListCatalogProducts;
 using Shared.Enums;
 
 namespace Product.Presentation.Controllers;
@@ -15,7 +15,7 @@ namespace Product.Presentation.Controllers;
 public class CatalogProductController(ISender sender) : ApiController(sender)
 {
     [HttpGet]
-    public async Task<IActionResult> GetProducts([FromQuery] GetListCatalogProductQuery request)
+    public async Task<IActionResult> GetProducts([FromQuery] GetListCatalogProductsQuery request)
     {
         var res = await Sender.Send(request);
         return res.IsSuccess ? Ok(res.Value) : BadRequest(res);

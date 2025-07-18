@@ -1,4 +1,5 @@
 using Identity.Domain.Entities;
+using Shared.Utils.Errors;
 
 namespace Identity.Domain.DomainErrors;
 

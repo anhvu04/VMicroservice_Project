@@ -1,5 +1,5 @@
 using Customer.Application.Usecases.CustomerSegment.Query.GetCustomerSegmentById;
-using Customer.Application.Usecases.CustomerSegment.Query.GetListCustomerSegment;
+using Customer.Application.Usecases.CustomerSegment.Query.GetListCustomerSegments;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +15,7 @@ public static class CustomerSegmentController
             [Authorize(Roles = nameof(UserRoles.Admin) + "," + nameof(UserRoles.Staff))]
             async (HttpRequest request, ISender sender) =>
             {
-                var query = new GetListCustomerSegmentQuery
+                var query = new GetListCustomerSegmentsQuery
                 {
                     SearchTerm = request.Query["searchTerm"]!,
                     OrderBy = request.Query["orderBy"]!,

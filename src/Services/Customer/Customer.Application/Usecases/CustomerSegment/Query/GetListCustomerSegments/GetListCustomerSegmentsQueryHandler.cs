@@ -1,25 +1,24 @@
 using System.Linq.Expressions;
-using Contracts.Common.Interfaces;
 using Contracts.Common.Interfaces.MediatR;
 using Customer.Application.Usecases.CustomerSegment.Common;
 using Customer.Domain.UnitOfWork;
 using Shared.Utils;
 using Shared.Utils.Params;
 
-namespace Customer.Application.Usecases.CustomerSegment.Query.GetListCustomerSegment;
+namespace Customer.Application.Usecases.CustomerSegment.Query.GetListCustomerSegments;
 
 public class
-    GetListCustomerSegmentQueryHandler : IQueryHandler<GetListCustomerSegmentQuery,
+    GetListCustomerSegmentsQueryHandler : IQueryHandler<GetListCustomerSegmentsQuery,
     PaginationResult<GetCustomerSegmentResponse>>
 {
     private readonly ICustomerUnitOfWork _customerUnitOfWork;
 
-    public GetListCustomerSegmentQueryHandler(ICustomerUnitOfWork customerUnitOfWork)
+    public GetListCustomerSegmentsQueryHandler(ICustomerUnitOfWork customerUnitOfWork)
     {
         _customerUnitOfWork = customerUnitOfWork;
     }
 
-    public async Task<Result<PaginationResult<GetCustomerSegmentResponse>>> Handle(GetListCustomerSegmentQuery request,
+    public async Task<Result<PaginationResult<GetCustomerSegmentResponse>>> Handle(GetListCustomerSegmentsQuery request,
         CancellationToken cancellationToken)
     {
         var query = _customerUnitOfWork.CustomerSegment.FindAll();

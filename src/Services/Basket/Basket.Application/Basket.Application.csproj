@@ -14,8 +14,4 @@
       <ProjectReference Include="..\Basket.Domain\Basket.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="MassTransit.Abstractions" Version="8.4.0" />
-    </ItemGroup>
-
 </Project>

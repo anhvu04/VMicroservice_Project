@@ -1,4 +1,5 @@
 using System.Reflection;
+using Basket.Application.Common;
 using FluentValidation;
 using Infrastructure.Behaviors;
 using Infrastructure.ConfigurationService;
@@ -14,10 +15,16 @@ public static class ServiceExtensions
     {
         services.ConfigureMapper();
         services.ConfigureCqrsMediatR(AssemblyReference.Assembly);
+        services.ConfigureDependencyInjection();
     }
 
     private static void ConfigureMapper(this IServiceCollection services)
     {
         services.AddScoped<IMapper, Mapper>();
+    }
+
+    private static void ConfigureDependencyInjection(this IServiceCollection services)
+    {
+        services.AddScoped<CartUtils>();
     }
 }

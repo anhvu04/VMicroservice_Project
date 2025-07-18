@@ -1,6 +1,6 @@
 namespace Basket.Application.Abstractions;
 
-public interface IStockService
+public interface IInventoryEntryService
 {
     Task<int> GetStockAsync(string productId);
 }

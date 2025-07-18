@@ -21,14 +21,23 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Protobuf Include="..\..\Inventory.Product\Inventory.Product.Presentation\Protos\stock.proto">
-        <GrpcServices>Both</GrpcServices>
-        <Access>Public</Access>
-        <ProtoCompile>True</ProtoCompile>
-        <CompileOutputs>True</CompileOutputs>
-        <OutputDir>obj\Debug\net8.0\</OutputDir>
-        <Generator>MSBuild:Compile</Generator>
-        <Link>Grpc\Protos\stock.proto</Link>
+      <Protobuf Include="..\..\Inventory.Product\Inventory.Product.Presentation\Grpc\Protos\inventory_entries.proto">
+        <Link>Grpc\Protos\inventory_entries.proto</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Protobuf>
+      <None Remove="Grpc\Protos\list_products.proto" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Protobuf Include="..\..\Product\Product.Presentation\Grpc\Protos\products.proto">
+        <Link>Grpc\Protos\products.proto</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Protobuf>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Protobuf Include="..\..\ScheduledJob\ScheduledJob.Presentation\Grpc\Protos\cart_notification_schedule.proto">
+        <Link>Grpc\Protos\cart_notification_schedule.proto</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Protobuf>
     </ItemGroup>

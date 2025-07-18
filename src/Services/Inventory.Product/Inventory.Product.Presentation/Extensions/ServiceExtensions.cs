@@ -2,8 +2,8 @@ using Infrastructure.ConfigurationService;
 using Inventory.Product.Application.Extensions;
 using Inventory.Product.Infrastructure.Extensions;
 using Inventory.Product.Persistence.Extensions;
-using Inventory.Product.Presentation.GrpcServerServices;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Shared.ConfigurationSettings;
 
 namespace Inventory.Product.Presentation.Extensions;
 
@@ -17,21 +17,8 @@ public static class ServiceExtensions
         builder.Services.AddApplication(builder.Configuration);
         builder.Services.AddInfrastructure(builder.Configuration);
         builder.Services.AddPersistence(builder.Configuration);
-        builder.ConfigureGrpcClients();
+        builder.ConfigureGrpcServers();
         builder.ConfigureServices();
-    }
-
-    private static void ConfigureGrpcClients(this WebApplicationBuilder builder)
-    {
-        builder.Services.AddGrpc();
-
-        builder.WebHost.ConfigureKestrel(options =>
-        {
-            var port = builder.Configuration.GetSection(nameof(GrpcPortSettings)).Get<GrpcPortSettings>() ??
-                       throw new Exception("GrpcPortSettings is null");
-            options.ListenAnyIP(port.InventoryHttp1, o => { o.Protocols = HttpProtocols.Http1; });
-            options.ListenAnyIP(port.InventoryHttp2, o => { o.Protocols = HttpProtocols.Http2; });
-        });
     }
 
     private static void ConfigureServices(this WebApplicationBuilder builder)

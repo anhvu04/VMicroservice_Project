@@ -1,6 +1,8 @@
 using Infrastructure.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using Product.Persistence.Persistence;
+using Product.Presentation.Grpc.Protos;
+using Product.Presentation.Grpc.Servers;
 
 namespace Product.Presentation.Extensions;
 
@@ -14,6 +16,7 @@ public static class ApplicationExtensions
         app.UseRouting();
         app.MapControllers();
         app.UseAuthorization();
+        app.MapGrpcService<ProductGrpcServer>();
         app.MigrateDatabase<ProductContext>();
     }
 

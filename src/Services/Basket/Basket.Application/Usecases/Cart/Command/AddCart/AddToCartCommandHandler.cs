@@ -1,85 +1,126 @@
 using System.Text.Json;
 using Basket.Application.Abstractions;
 using Basket.Application.Common;
+using Basket.Domain.DomainErrors;
+using Basket.Domain.Entities;
 using Basket.Domain.GenericRepository;
-using Basket.Repositories.Entities;
 using Contracts.Common.Interfaces.MediatR;
+using Shared.InfrastructureServiceModels.CartNotification;
+using Shared.InfrastructureServiceModels.GetListCatalogProductsByIdModel;
 using Shared.Utils;
 
 namespace Basket.Application.Usecases.Cart.Command.AddCart;
 
 public class AddToCartCommandHandler : ICommandHandler<AddToCartCommand>
 {
-    private readonly IStockService _stockService;
     private readonly IBasketRepository _cartRepository;
+    private readonly ICartNotificationScheduleService _cartNotificationScheduleService;
+    private readonly ICatalogProductService _catalogProductService;
 
-    public AddToCartCommandHandler(IBasketRepository cartRepository, IStockService stockService)
+    public AddToCartCommandHandler(IBasketRepository cartRepository,
+        ICartNotificationScheduleService cartNotificationScheduleService, ICatalogProductService catalogProductService)
     {
         _cartRepository = cartRepository;
-        _stockService = stockService;
+        _cartNotificationScheduleService = cartNotificationScheduleService;
+        _catalogProductService = catalogProductService;
     }
 
     public async Task<Result> Handle(AddToCartCommand request, CancellationToken cancellationToken)
     {
-        // check stock quantity
-        var stockResult = await _stockService.GetStockAsync(request.ProductId.ToString());
-        if (request.Quantity > stockResult)
+        try
         {
-            return Result.Failure("Not enough stock in inventory");
-        }
-
-        // get cart
-        var cartKey = Utils.GetCartKey(request.UserId);
-        var cart = await _cartRepository.GetDataByKeyAsync(request.UserId.ToString());
-
-        // create cart if not exist
-        if (string.IsNullOrEmpty(cart))
-        {
-            var newCart = new Domain.Entities.Cart
-            {
-                UserId = request.UserId,
-                Items = new List<CartItems>
+            // check product exist
+            var products = await _catalogProductService.GetListCatalogProductsByIdAsync(
+                new GetListCatalogProductsByIdRequest
                 {
-                    new()
+                    Ids = { request.ProductId }
+                });
+
+            if (products.Count == 0)
+            {
+                return Result.Failure("Product not found");
+            }
+
+            // get cart
+            var cartKey = Utils.GetCartKey(request.UserId);
+            var jsonCart = await _cartRepository.GetDataByKeyAsync(cartKey);
+            Domain.Entities.Cart? cart;
+            // create cart if not exist
+            if (string.IsNullOrEmpty(jsonCart))
+            {
+                cart = new Domain.Entities.Cart
+                {
+                    UserId = request.UserId,
+                    Items = new List<CartItems>
                     {
-                        ProductId = request.ProductId,
-                        ProductName = request.ProductName,
-                        ProductPrice = request.ProductPrice,
-                        Quantity = request.Quantity
-                    }
-                },
-            };
+                        new()
+                        {
+                            ProductId = request.ProductId,
+                            Quantity = request.Quantity
+                        }
+                    },
+                };
+
+                // save cart
+                await _cartRepository.SetDataAsync(cartKey, cart, TimeSpan.FromDays(180));
+                return Result.Success();
+            }
+
+            cart = JsonSerializer.Deserialize<Domain.Entities.Cart>(jsonCart);
+            if (cart == null)
+            {
+                return Result.Failure("Failed to deserialize cart");
+            }
+
+            // check if product already exist
+            var item = cart.Items.FirstOrDefault(x => x.ProductId == request.ProductId);
+            if (item == null)
+            {
+                cart.Items.Add(new CartItems
+                {
+                    ProductId = request.ProductId,
+                    Quantity = request.Quantity
+                });
+            }
+            else
+            {
+                item.Quantity += request.Quantity;
+            }
+
+            // call grpc (scheduled service) to schedule job + get jobId
+            cart.JobId = await ScheduledJobAsync(cart);
 
             // save cart
-            await _cartRepository.SetDataAsync(cartKey, newCart, TimeSpan.FromDays(180));
+            await _cartRepository.SetDataAsync(cartKey, cart, TimeSpan.FromDays(180));
             return Result.Success();
         }
-
-        var cartItem = JsonSerializer.Deserialize<Domain.Entities.Cart>(cart);
-        if (cartItem == null)
+        catch (Exception e)
         {
-            return Result.Failure("Cart is null");
+            Console.WriteLine(e);
+            return Result.Failure(CartErrors.ErrorGettingCart);
         }
+    }
 
-        // check if product already exist
-        var item = cartItem.Items.FirstOrDefault(x => x.ProductId == request.ProductId);
-        if (item == null)
+    private async Task<string?> ScheduledJobAsync(Domain.Entities.Cart cart)
+    {
+        try
         {
-            cartItem.Items.Add(new CartItems
-            {
-                ProductId = request.ProductId,
-                ProductName = request.ProductName,
-                ProductPrice = request.ProductPrice,
-                Quantity = request.Quantity
-            });
+            var job = await _cartNotificationScheduleService.SendCartNotificationScheduleAsync(
+                new SendCartNotificationScheduleRequest
+                {
+                    UserId = cart.UserId,
+                    Items = cart.Items.Select(x => new SendCartItemsNotificationScheduleRequest
+                    {
+                        ProductId = x.ProductId,
+                        Quantity = x.Quantity
+                    }).ToList()
+                });
+            return job.JobId;
         }
-        else
+        catch (Exception e)
         {
-            item.Quantity += request.Quantity;
+            Console.WriteLine("Failed to schedule job" + e.Message);
+            return null;
         }
-
-        // save cart
-        await _cartRepository.SetDataAsync(cartKey, cartItem, TimeSpan.FromDays(180));
-        return Result.Success();
     }
 }

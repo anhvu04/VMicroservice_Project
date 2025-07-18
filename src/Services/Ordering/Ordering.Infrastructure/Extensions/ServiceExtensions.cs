@@ -1,9 +1,10 @@
+using Infrastructure.ConfigurationService;
 using MassTransit;
 using MassTransit.Transports.Fabric;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Ordering.Infrastructure.IntegrationEvents.EventHandlers;
+using Ordering.Infrastructure.RabbitMqService.IntegrationEventHandlers;
 using Shared.ConfigurationSettings;
 
 namespace Ordering.Infrastructure.Extensions;
@@ -12,46 +13,39 @@ public static class ServiceExtensions
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.ConfigureMassTransit(configuration);
+        services.ConfigureMassTransitMessageBus(configuration, ConfigureConsumers, ConfigureMessageBus);
     }
 
-    private static void ConfigureMassTransit(this IServiceCollection services, IConfiguration configuration)
+    private static void ConfigureConsumers(IBusRegistrationConfigurator cfg)
     {
-        services.Configure<EventBusSettings>(configuration.GetSection("EventBusSettings"));
+        cfg.AddConsumer<BasketCheckoutEventHandler>();
+    }
 
-        var eventBusSettings = configuration.GetSection("EventBusSettings").Get<EventBusSettings>()
-                               ?? throw new InvalidOperationException("EventBusSettings is not configured properly.");
+    private static void ConfigureMessageBus(IRabbitMqBusFactoryConfigurator cfg, IBusRegistrationContext ctx)
+    {
+        ConfigureBasketCheckoutQueue(cfg, ctx);
+    }
 
-        services.TryAddSingleton(KebabCaseEndpointNameFormatter
-            .Instance); // Ex: routing key: BasketCheckoutEvent -> basket-checkout-event
-        Console.WriteLine(eventBusSettings.Host + ":" + eventBusSettings.Port + ":" + eventBusSettings.Username + ":" +
-                          eventBusSettings.Password);
-        services.AddMassTransit(config =>
-        {
-            config.AddConsumer<BasketCheckoutEventHandler>();
-
-            config.UsingRabbitMq((ctx, cfg) =>
+    private static void ConfigureBasketCheckoutQueue(IRabbitMqBusFactoryConfigurator cfg, IBusRegistrationContext ctx)
+    {
+        cfg.ReceiveEndpoint("basket-checkout-queue",
+            c =>
             {
-                cfg.Host(eventBusSettings.Host, (ushort)eventBusSettings.Port, "/", h =>
-                {
-                    h.Username(eventBusSettings.Username);
-                    h.Password(eventBusSettings.Password);
-                });
+                // Set ở consumer nghĩa là exchange type của queue = direct (masstransit sẽ tự động tạo 1 exchange theo tên của queue map 1-1). 
+                // Tuy nhiên nếu exchange type = direct thì phải bind thêm routing key của exchange tự tạo với queue
+                // c.ExchangeType = "direct";
 
-                cfg.ReceiveEndpoint("basket-checkout-queue",
-                    c =>
+                // Set false nghĩa là không tự động tạo exchange theo namespace của event
+                c.ConfigureConsumeTopology = false;
+
+                c.ConfigureConsumer<BasketCheckoutEventHandler>(ctx);
+                c.Bind("basket-checkout-exchange",
+                    x =>
                     {
-                        c.ConfigureConsumer<BasketCheckoutEventHandler>(ctx);
-                        c.Bind("basket-checkout-exchange",
-                            x =>
-                            {
-                                x.RoutingKey = "basket-checkout-routing-key"; // Set ở consumer nghĩa là routing key = binding key
-                                x.ExchangeType = ExchangeType.Direct.ToString();
-                            });
+                        // Set ở consumer nghĩa là routing key = binding key
+                        x.RoutingKey = "basket-checkout-routing-key";
+                        x.ExchangeType = "direct";
                     });
-
-                cfg.ConfigureEndpoints(ctx);
             });
-        });
     }
 }

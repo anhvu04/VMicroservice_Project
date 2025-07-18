@@ -13,11 +13,15 @@
     <ItemGroup>
       <PackageReference Include="FluentValidation" Version="12.0.0" />
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+      <PackageReference Include="grpc.aspnetcore" Version="2.71.0" />
       <PackageReference Include="Hangfire.AspNetCore" Version="1.8.20" />
       <PackageReference Include="Hangfire.Console.Extensions" Version="2.0.0" />
       <PackageReference Include="Hangfire.Mongo" Version="1.11.6" />
       <PackageReference Include="MailKit" Version="4.12.0" />
       <PackageReference Include="Mapster" Version="7.4.0" />
+      <PackageReference Include="MassTransit" Version="8.5.1" />
+      <PackageReference Include="MassTransit.Abstractions" Version="8.5.1" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.1" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.17" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.4.0" />
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.1" />

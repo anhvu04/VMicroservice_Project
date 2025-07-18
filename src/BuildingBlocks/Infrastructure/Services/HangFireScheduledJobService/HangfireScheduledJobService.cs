@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using Contracts.Services.ScheduledJobService;
 using Hangfire;
 
-namespace Infrastructure.Services.ScheduledJobService;
+namespace Infrastructure.Services.HangFireScheduledJobService;
 
 public class HangfireScheduledJobService : IScheduledJobService
 {

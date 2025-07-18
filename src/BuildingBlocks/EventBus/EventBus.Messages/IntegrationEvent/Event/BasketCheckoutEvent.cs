@@ -1,4 +1,5 @@
 using EventBus.Messages.IntegrationEvent.Interface;
+using MassTransit;
 
 namespace EventBus.Messages.IntegrationEvent.Event;
 

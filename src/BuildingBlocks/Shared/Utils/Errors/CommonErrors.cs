@@ -1,4 +1,4 @@
-namespace Identity.Domain.DomainErrors;
+namespace Shared.Utils.Errors;
 
 public static class CommonErrors
 {

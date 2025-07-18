@@ -24,10 +24,18 @@ public class MongoDbRepository<T> : IMongoDbRepository<T> where T : MongoEntity
     protected virtual IMongoCollection<T> GetCollection()
         => _database.GetCollection<T>(GetCollectionName());
 
-    public void Create(T entity) => GetCollection().InsertOne(entity);
+    public void Create(T entity)
+    {
+        entity.CreatedDate = DateTime.UtcNow;
+        GetCollection().InsertOne(entity);
+    }
 
 
-    public void Update(T entity) => GetCollection().ReplaceOne(x => x.Id == entity.Id, entity);
+    public void Update(T entity)
+    {
+        entity.UpdatedDate = DateTime.UtcNow;
+        GetCollection().ReplaceOne(x => x.Id == entity.Id, entity);
+    }
 
 
     public void Delete(string id) => GetCollection().DeleteOne(x => x.Id == id);

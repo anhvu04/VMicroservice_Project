@@ -5,7 +5,7 @@ using Hangfire.Console.Extensions;
 using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies;
 using Hangfire.Mongo.Migration.Strategies.Backup;
-using Infrastructure.Services.ScheduledJobService;
+using Infrastructure.Services.HangFireScheduledJobService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace Shared.ServiceModels.EmailServiceModel;
+namespace Shared.InfrastructureServiceModels.EmailServiceModel;
 
 public class SmtpEmailRequest
 {

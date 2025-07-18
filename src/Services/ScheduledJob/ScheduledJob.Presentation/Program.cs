@@ -1,8 +1,8 @@
 using Common.Logging;
-using HangFire.API.Extensions;
+using ScheduledJob.Presentation.Extensions;
 using Serilog;
 
-namespace HangFire.API;
+namespace ScheduledJob.Presentation;
 
 public class Program
 {
@@ -14,7 +14,7 @@ public class Program
 
         var builder = WebApplication.CreateBuilder(args);
         builder.Host.UseSerilog(Serilogger.ConfigureLogger);
-        Log.Information("Starting HangFire API Up");
+        Log.Information("Starting ScheduledJob API Up");
 
         try
         {
@@ -40,7 +40,7 @@ public class Program
         }
         finally
         {
-            Log.Information("HangFire API Shutdown");
+            Log.Information("ScheduledJob API Shutdown");
             Log.CloseAndFlush();
         }
     }

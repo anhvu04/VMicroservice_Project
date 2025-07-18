@@ -1,8 +1,9 @@
 using Hangfire;
 using Infrastructure.ConfigurationService;
 using Infrastructure.Middlewares;
+using ScheduledJob.Presentation.Grpc.Servers;
 
-namespace HangFire.API.Extensions;
+namespace ScheduledJob.Presentation.Extensions;
 
 public static class ApplicationExtensions
 {
@@ -15,5 +16,6 @@ public static class ApplicationExtensions
         app.MapControllers();
         app.UseAuthorization();
         app.ConfigureHangFireDashboard(app.Configuration);
+        app.MapGrpcService<CartNotificationGrpcServer>();
     }
 }

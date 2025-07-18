@@ -1,26 +1,24 @@
 using System.Linq.Expressions;
-using Contracts.Common.Interfaces;
 using Contracts.Common.Interfaces.MediatR;
 using MapsterMapper;
-using Microsoft.EntityFrameworkCore;
 using Ordering.Application.Usecases.Order.Common;
 using Ordering.Domain.UnitOfWork;
 using Shared.Utils;
 
-namespace Ordering.Application.Usecases.Order.Query.GetOrders;
+namespace Ordering.Application.Usecases.Order.Query.GetListOrders;
 
-public class GetOrdersQueryHandler : IQueryHandler<GetOrdersQuery, PaginationResult<OrderModel>>
+public class GetListOrdersQueryHandler : IQueryHandler<GetListOrdersQuery, PaginationResult<OrderModel>>
 {
     private readonly IOrderingUnitOfWork _orderingUnitOfWork;
     private readonly IMapper _mapper;
 
-    public GetOrdersQueryHandler(IMapper mapper, IOrderingUnitOfWork orderingUnitOfWork)
+    public GetListOrdersQueryHandler(IMapper mapper, IOrderingUnitOfWork orderingUnitOfWork)
     {
         _mapper = mapper;
         _orderingUnitOfWork = orderingUnitOfWork;
     }
 
-    public async Task<Result<PaginationResult<OrderModel>>> Handle(GetOrdersQuery request,
+    public async Task<Result<PaginationResult<OrderModel>>> Handle(GetListOrdersQuery request,
         CancellationToken cancellationToken)
     {
         var orders = _orderingUnitOfWork.Orders.FindAll(cancellationToken: cancellationToken);
@@ -46,7 +44,7 @@ public class GetOrdersQueryHandler : IQueryHandler<GetOrdersQuery, PaginationRes
     #region Private Methods
 
     private static IQueryable<Domain.Entities.Order> ApplySorting(IQueryable<Domain.Entities.Order> orders,
-        GetOrdersQuery request)
+        GetListOrdersQuery request)
     {
         var orderBy = request.OrderBy!;
         var isDescending = request.IsDescending;

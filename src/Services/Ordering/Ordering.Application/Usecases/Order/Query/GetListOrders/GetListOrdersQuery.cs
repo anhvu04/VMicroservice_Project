@@ -3,9 +3,9 @@ using Ordering.Application.Usecases.Order.Common;
 using Shared.Utils;
 using Shared.Utils.Params;
 
-namespace Ordering.Application.Usecases.Order.Query.GetOrders;
+namespace Ordering.Application.Usecases.Order.Query.GetListOrders;
 
-public class GetOrdersQuery : BaseQuery, IQuery<PaginationResult<OrderModel>>
+public class GetListOrdersQuery : BaseQuery, IQuery<PaginationResult<OrderModel>>
 {
     public Guid? UserId { get; set; }
 }

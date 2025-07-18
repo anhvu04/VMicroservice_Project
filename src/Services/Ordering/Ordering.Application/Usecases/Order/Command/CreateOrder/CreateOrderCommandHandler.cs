@@ -45,8 +45,8 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
                 ProductId = item.ProductId,
                 ProductName = item.ProductName,
                 Quantity = item.Quantity,
-                UnitPrice = item.ProductPrice,
-                ItemPrice = item.ProductPrice * item.Quantity
+                UnitPrice = item.ProductSalePrice != 0 ? item.ProductSalePrice : item.ProductOriginalPrice,
+                ItemPrice =  item.ProductSalePrice != 0 ? item.ProductSalePrice * item.Quantity : item.ProductOriginalPrice * item.Quantity
             });
         });
 

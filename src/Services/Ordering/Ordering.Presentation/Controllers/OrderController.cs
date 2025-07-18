@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ordering.Application.Usecases.Order.Command.CreateOrder;
 using Ordering.Application.Usecases.Order.Command.DeleteOrder;
+using Ordering.Application.Usecases.Order.Query.GetListOrders;
 using Ordering.Application.Usecases.Order.Query.GetOrder;
-using Ordering.Application.Usecases.Order.Query.GetOrders;
 using Shared.Enums;
 
 namespace Ordering.Presentation.Controllers;
@@ -15,7 +15,7 @@ public class OrderController(ISender sender) : ApiController(sender)
 {
     [HttpGet]
     [Authorize(Roles = nameof(UserRoles.Admin) + "," + nameof(UserRoles.Staff))]
-    public async Task<IActionResult> GetOrdersAsync([FromQuery] GetOrdersQuery query)
+    public async Task<IActionResult> GetOrdersAsync([FromQuery] GetListOrdersQuery query)
     {
         var result = await Sender.Send(query);
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result);

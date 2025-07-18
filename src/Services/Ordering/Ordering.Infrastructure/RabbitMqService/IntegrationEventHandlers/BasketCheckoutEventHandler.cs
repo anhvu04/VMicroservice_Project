@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Ordering.Application.Usecases.Order.Command.CreateOrder;
 
-namespace Ordering.Infrastructure.IntegrationEvents.EventHandlers;
+namespace Ordering.Infrastructure.RabbitMqService.IntegrationEventHandlers;
 
 public class BasketCheckoutEventHandler : IConsumer<BasketCheckoutEvent>
 {

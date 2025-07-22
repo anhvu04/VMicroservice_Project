@@ -1,8 +1,8 @@
 using Contracts.Common.Interfaces;
-using Contracts.Common.Interfaces.MediatR;
 using Customer.Application.Usecases.CustomerSegment.Common;
 using Customer.Domain.UnitOfWork;
 using MapsterMapper;
+using Shared.MediatR;
 using Shared.Utils;
 
 namespace Customer.Application.Usecases.CustomerSegment.Query.GetCustomerSegmentById;

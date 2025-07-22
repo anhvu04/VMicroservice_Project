@@ -1,5 +1,5 @@
-using Contracts.Common.Interfaces.MediatR;
 using Customer.Application.Usecases.CustomerSegment.Common;
+using Shared.MediatR;
 
 namespace Customer.Application.Usecases.CustomerSegment.Query.GetCustomerSegmentById;
 

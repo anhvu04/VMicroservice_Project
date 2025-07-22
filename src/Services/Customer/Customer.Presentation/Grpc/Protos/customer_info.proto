@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "Identity.Presentation.Grpc.Protos";
+
+service CustomerInfoProtoService {
+  rpc GetCustomerInfo (GetCustomerInfoRequest) returns (GetCustomerInfoResponse);
+}
+
+message GetCustomerInfoRequest {
+  string customerId = 1;
+}
+
+message GetCustomerInfoResponse {
+  string firstName = 1;
+  string lastName = 2;
+  string email = 3;
+}

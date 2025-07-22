@@ -4,25 +4,25 @@ using Basket.Application.Common;
 using Basket.Domain.DomainErrors;
 using Basket.Domain.Entities;
 using Basket.Domain.GenericRepository;
-using Contracts.Common.Interfaces.MediatR;
-using Shared.InfrastructureServiceModels.CartNotification;
-using Shared.InfrastructureServiceModels.GetListCatalogProductsByIdModel;
+using Shared.InfrastructureGrpcModels.CartNotification;
+using Shared.InfrastructureGrpcModels.GetListCatalogProductsByIdModel;
+using Shared.MediatR;
 using Shared.Utils;
 
 namespace Basket.Application.Usecases.Cart.Command.AddCart;
 
 public class AddToCartCommandHandler : ICommandHandler<AddToCartCommand>
 {
-    private readonly IBasketRepository _cartRepository;
-    private readonly ICartNotificationScheduleService _cartNotificationScheduleService;
+    private readonly ICartRepository _cartRepository;
     private readonly ICatalogProductService _catalogProductService;
+    private readonly CartUtils _cartUtils;
 
-    public AddToCartCommandHandler(IBasketRepository cartRepository,
-        ICartNotificationScheduleService cartNotificationScheduleService, ICatalogProductService catalogProductService)
+    public AddToCartCommandHandler(ICartRepository cartRepository, ICatalogProductService catalogProductService,
+        CartUtils cartUtils)
     {
         _cartRepository = cartRepository;
-        _cartNotificationScheduleService = cartNotificationScheduleService;
         _catalogProductService = catalogProductService;
+        _cartUtils = cartUtils;
     }
 
     public async Task<Result> Handle(AddToCartCommand request, CancellationToken cancellationToken)
@@ -31,7 +31,7 @@ public class AddToCartCommandHandler : ICommandHandler<AddToCartCommand>
         {
             // check product exist
             var products = await _catalogProductService.GetListCatalogProductsByIdAsync(
-                new GetListCatalogProductsByIdRequest
+                new GetListCatalogProductsByIdGrpcBaseRequest
                 {
                     Ids = { request.ProductId }
                 });
@@ -42,13 +42,13 @@ public class AddToCartCommandHandler : ICommandHandler<AddToCartCommand>
             }
 
             // get cart
-            var cartKey = Utils.GetCartKey(request.UserId);
-            var jsonCart = await _cartRepository.GetDataByKeyAsync(cartKey);
-            Domain.Entities.Cart? cart;
+            var cartKey = _cartUtils.GetCartKey(request.UserId);
+            var cart = await _cartRepository.GetCartAsync(cartKey);
+
             // create cart if not exist
-            if (string.IsNullOrEmpty(jsonCart))
+            if (!cart.IsSuccess)
             {
-                cart = new Domain.Entities.Cart
+                cart.Value = new Domain.Entities.Cart
                 {
                     UserId = request.UserId,
                     Items = new List<CartItems>
@@ -60,23 +60,26 @@ public class AddToCartCommandHandler : ICommandHandler<AddToCartCommand>
                         }
                     },
                 };
+                
+                // call grpc (scheduled service) to schedule job + get jobId
+                var jobIdEmptyCart = await _cartUtils.ScheduledJobAsync(cart.Value);
+                cart.Value.JobId = string.IsNullOrEmpty(jobIdEmptyCart) ? null : jobIdEmptyCart;
 
                 // save cart
-                await _cartRepository.SetDataAsync(cartKey, cart, TimeSpan.FromDays(180));
+                var saveCartResult = await _cartRepository.SaveCartAsync(cartKey, cart.Value);
+                if (!saveCartResult.IsSuccess)
+                {
+                    return Result.Failure(CartErrors.ErrorUpdatingCart);
+                }
+
                 return Result.Success();
             }
 
-            cart = JsonSerializer.Deserialize<Domain.Entities.Cart>(jsonCart);
-            if (cart == null)
-            {
-                return Result.Failure("Failed to deserialize cart");
-            }
-
             // check if product already exist
-            var item = cart.Items.FirstOrDefault(x => x.ProductId == request.ProductId);
+            var item = cart.Value!.Items.FirstOrDefault(x => x.ProductId == request.ProductId);
             if (item == null)
             {
-                cart.Items.Add(new CartItems
+                cart.Value.Items.Add(new CartItems
                 {
                     ProductId = request.ProductId,
                     Quantity = request.Quantity
@@ -88,39 +91,22 @@ public class AddToCartCommandHandler : ICommandHandler<AddToCartCommand>
             }
 
             // call grpc (scheduled service) to schedule job + get jobId
-            cart.JobId = await ScheduledJobAsync(cart);
+            var jobId = await _cartUtils.ScheduledJobAsync(cart.Value);
+            cart.Value.JobId = string.IsNullOrEmpty(jobId) ? null : jobId;
 
             // save cart
-            await _cartRepository.SetDataAsync(cartKey, cart, TimeSpan.FromDays(180));
+            var res = await _cartRepository.SaveCartAsync(cartKey, cart.Value);
+            if (!res.IsSuccess)
+            {
+                return Result.Failure(CartErrors.ErrorUpdatingCart);
+            }
+
             return Result.Success();
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             return Result.Failure(CartErrors.ErrorGettingCart);
-        }
-    }
-
-    private async Task<string?> ScheduledJobAsync(Domain.Entities.Cart cart)
-    {
-        try
-        {
-            var job = await _cartNotificationScheduleService.SendCartNotificationScheduleAsync(
-                new SendCartNotificationScheduleRequest
-                {
-                    UserId = cart.UserId,
-                    Items = cart.Items.Select(x => new SendCartItemsNotificationScheduleRequest
-                    {
-                        ProductId = x.ProductId,
-                        Quantity = x.Quantity
-                    }).ToList()
-                });
-            return job.JobId;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Failed to schedule job" + e.Message);
-            return null;
         }
     }
 }

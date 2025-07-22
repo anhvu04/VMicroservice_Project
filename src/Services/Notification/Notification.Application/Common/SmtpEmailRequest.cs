@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace Shared.InfrastructureServiceModels.EmailServiceModel;
+namespace Notification.Application.Common;
 
 public class SmtpEmailRequest
 {
@@ -12,7 +12,7 @@ public class SmtpEmailRequest
     public IFormFileCollection Attachments { get; set; } = null!;
 }
 
-public  class ToEmail
+public class ToEmail
 {
     [EmailAddress] public string To { get; set; } = null!;
 }

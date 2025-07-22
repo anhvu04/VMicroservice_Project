@@ -1,12 +1,12 @@
-using Contracts.Services.EmailService;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using Notification.Application.Abstractions.EmailService;
+using Notification.Application.Common;
 using Shared.ConfigurationSettings;
-using Shared.InfrastructureServiceModels.EmailServiceModel;
 using Shared.Utils;
 
-namespace Infrastructure.Services.EmailService;
+namespace Notification.Infrastructure.EmailService;
 
 public class SmtpEmailService : ISmtpEmailService
 {
@@ -49,7 +49,7 @@ public class SmtpEmailService : ISmtpEmailService
                 cancellationToken);
             await smtpClient.AuthenticateAsync(_emailSettings.SenderEmail, _emailSettings.Password, cancellationToken);
             await smtpClient.SendAsync(mailKit, cancellationToken);
-            _logger.LogInformation("Email sent successfully");
+            _logger.LogInformation("Email sent successfully to {ToEmail}", request.ToEmail.To);
         }
         catch (Exception ex)
         {

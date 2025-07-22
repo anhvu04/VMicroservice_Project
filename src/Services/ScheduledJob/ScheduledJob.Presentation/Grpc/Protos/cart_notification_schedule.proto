@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "HangFire.Presentation.Grpc.Protos";
+option csharp_namespace = "ScheduledJob.Presentation.Grpc.Protos";
 
 service CartNotificationScheduleService {
   rpc SendCartNotificationSchedule (CartNotificationScheduleRequest) returns (CartNotificationScheduleResponse);
@@ -9,7 +9,8 @@ service CartNotificationScheduleService {
 message CartNotificationScheduleRequest {
   string user_id = 1;
   repeated CartItems items = 2;
-  string last_modified_date = 4;
+  string last_modified_date = 3;
+  string job_id = 4;
 }
 
 message CartItems {

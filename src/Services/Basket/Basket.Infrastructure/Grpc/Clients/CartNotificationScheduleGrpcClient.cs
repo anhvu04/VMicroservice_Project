@@ -1,25 +1,24 @@
 using System.Globalization;
 using Basket.Application.Abstractions;
-using HangFire.Presentation.Grpc.Protos;
-using Shared.InfrastructureServiceModels.CartNotification;
-using CartItems = HangFire.Presentation.Grpc.Protos.CartItems;
-
+using ScheduledJob.Presentation.Grpc.Protos;
+using Shared.InfrastructureGrpcModels.CartNotification;
+using Shared.Utils.Errors;
 namespace Basket.Infrastructure.Grpc.Clients;
 
-public class CartNotificationScheduleGrpcClientService : ICartNotificationScheduleService
+public class CartNotificationScheduleGrpcClient : ICartNotificationScheduleService
 {
     private readonly CartNotificationScheduleService.CartNotificationScheduleServiceClient
         _cartNotificationScheduleServiceClient;
 
-    public CartNotificationScheduleGrpcClientService(
+    public CartNotificationScheduleGrpcClient(
         CartNotificationScheduleService.CartNotificationScheduleServiceClient cartNotificationScheduleServiceClient)
     {
         _cartNotificationScheduleServiceClient = cartNotificationScheduleServiceClient;
     }
 
 
-    public async Task<SendCartNotificationScheduleResponse> SendCartNotificationScheduleAsync(
-        SendCartNotificationScheduleRequest scheduleRequest,
+    public async Task<SendCartNotificationScheduleGrpcBaseResponse> SendCartNotificationScheduleAsync(
+        SendCartNotificationScheduleGrpcBaseRequest scheduleGrpcBaseRequest,
         CancellationToken cancellationToken = default)
     {
         try
@@ -27,23 +26,24 @@ public class CartNotificationScheduleGrpcClientService : ICartNotificationSchedu
             var jobId = await _cartNotificationScheduleServiceClient.SendCartNotificationScheduleAsync(
                 new CartNotificationScheduleRequest
                 {
-                    UserId = scheduleRequest.UserId.ToString(),
+                    UserId = scheduleGrpcBaseRequest.UserId.ToString(),
                     Items =
                     {
-                        scheduleRequest.Items.Select(x => new CartItems
+                        scheduleGrpcBaseRequest.Items.Select(x => new CartItems
                         {
                             ProductId = x.ProductId.ToString(),
                             Quantity = x.Quantity
                         })
                     },
-                    LastModifiedDate = scheduleRequest.LastModifiedDate.ToString(CultureInfo.InvariantCulture)
+                    LastModifiedDate = scheduleGrpcBaseRequest.LastModifiedDate.ToString(CultureInfo.InvariantCulture),
+                    JobId = scheduleGrpcBaseRequest.JobId
                 });
 
-            return new SendCartNotificationScheduleResponse(jobId.JobId);
+            return new SendCartNotificationScheduleGrpcBaseResponse(jobId.JobId);
         }
         catch (Exception e)
         {
-            throw new Exception(e.Message);
+            throw new Exception(GrpcCalledError.BasketClientError.CartNotificationScheduleError, e);
         }
     }
 }

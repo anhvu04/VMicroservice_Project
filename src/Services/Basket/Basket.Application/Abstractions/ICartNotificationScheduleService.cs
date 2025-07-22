@@ -1,9 +1,9 @@
-using Shared.InfrastructureServiceModels.CartNotification;
+using Shared.InfrastructureGrpcModels.CartNotification;
 
 namespace Basket.Application.Abstractions;
 
 public interface ICartNotificationScheduleService
 {
-    Task<SendCartNotificationScheduleResponse> SendCartNotificationScheduleAsync(SendCartNotificationScheduleRequest scheduleRequest,
+    Task<SendCartNotificationScheduleGrpcBaseResponse> SendCartNotificationScheduleAsync(SendCartNotificationScheduleGrpcBaseRequest scheduleGrpcBaseRequest,
         CancellationToken cancellationToken = default);
 }

@@ -1,6 +1,6 @@
 using Shared.Utils;
 
-namespace Contracts.Services.EmailService;
+namespace Notification.Application.Abstractions.EmailService;
 
 public interface IEmailService<in T>
 {

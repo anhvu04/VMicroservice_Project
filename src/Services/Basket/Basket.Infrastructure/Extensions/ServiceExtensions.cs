@@ -1,13 +1,13 @@
 using Basket.Application.Abstractions;
 using Basket.Infrastructure.Grpc.Clients;
 using EventBus.Messages.IntegrationEvent.Event;
-using HangFire.Presentation.Grpc.Protos;
 using Infrastructure.ConfigurationService;
 using Inventory.Product.Presentation.Grpc.Protos;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Product.Presentation.Grpc.Protos;
+using ScheduledJob.Presentation.Grpc.Protos;
 using Shared.ConfigurationSettings;
 
 namespace Basket.Infrastructure.Extensions;
@@ -59,8 +59,8 @@ public static class ServiceExtensions
             c.Address = new Uri(grpcHostSettings.ScheduledJobUrl);
         });
 
-        service.AddScoped<IInventoryEntryService, GetInventoryEntryGrpcClientService>();
-        service.AddScoped<ICatalogProductService, GetListProductsGrpcClientService>();
-        service.AddScoped<ICartNotificationScheduleService, CartNotificationScheduleGrpcClientService>();
+        service.AddScoped<IInventoryEntryService, InventoryEntryGrpcClient>();
+        service.AddScoped<ICatalogProductService, ListProductsGrpcClient>();
+        service.AddScoped<ICartNotificationScheduleService, CartNotificationScheduleGrpcClient>();
     }
 }

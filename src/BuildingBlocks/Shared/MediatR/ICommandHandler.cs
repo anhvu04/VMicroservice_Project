@@ -1,7 +1,7 @@
 using MediatR;
 using Shared.Utils;
 
-namespace Contracts.Common.Interfaces.MediatR;
+namespace Shared.MediatR;
 
 public interface ICommandHandler<in TCommand> : IRequestHandler<TCommand, Result> where TCommand : ICommand
 {

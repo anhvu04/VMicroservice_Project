@@ -1,7 +1,6 @@
 using Contracts.Domains.EventsEntity;
-using Contracts.Domains.Interfaces;
 
-namespace Contracts.Common.Interfaces.MediatR;
+namespace Contracts.Domains.Interfaces;
 
 public interface IEventEntity
 {

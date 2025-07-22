@@ -1,0 +1,8 @@
+namespace Contracts.Services.CacheService;
+
+public interface ICacheService
+{
+    Task<string?> GetDataByKeyAsync(string key);
+    Task<bool> SetDataAsync(string key, object value, TimeSpan expiry);
+    Task<bool> DeleteDataAsync(string key);
+}

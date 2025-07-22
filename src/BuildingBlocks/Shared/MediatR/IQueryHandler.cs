@@ -1,7 +1,7 @@
 using MediatR;
 using Shared.Utils;
 
-namespace Contracts.Common.Interfaces.MediatR;
+namespace Shared.MediatR;
 
 public interface IQueryHandler<in TQuery> : IRequestHandler<TQuery, Result>
     where TQuery : IQuery

@@ -1,5 +1,5 @@
 using Contracts.Domains.EventsEntity;
-using MediatR;
+using IMediator = MediatR.IMediator;
 
 namespace Infrastructure.Extensions.MediatorExtentions;
 

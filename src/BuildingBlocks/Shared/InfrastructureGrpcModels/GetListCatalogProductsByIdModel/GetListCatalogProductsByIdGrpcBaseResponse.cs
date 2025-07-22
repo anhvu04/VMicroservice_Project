@@ -1,6 +1,6 @@
-namespace Shared.InfrastructureServiceModels.GetListCatalogProductsByIdModel;
+namespace Shared.InfrastructureGrpcModels.GetListCatalogProductsByIdModel;
 
-public class GetListCatalogProductsByIdResponse
+public class GetListCatalogProductsByIdGrpcBaseResponse
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;

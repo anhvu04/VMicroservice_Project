@@ -27,7 +27,7 @@ public class Result
 
 public class Result<T> : Result
 {
-    public T? Value { get; }
+    public T? Value { get; set; }
 
     protected internal Result(T? value, bool isSuccess, string? error)
         : base(isSuccess, error)

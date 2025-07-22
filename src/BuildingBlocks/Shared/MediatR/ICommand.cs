@@ -1,7 +1,7 @@
 using MediatR;
 using Shared.Utils;
 
-namespace Contracts.Common.Interfaces.MediatR;
+namespace Shared.MediatR;
 
 public interface ICommand : IRequest<Result>
 {

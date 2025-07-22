@@ -1,5 +1,5 @@
-using Contracts.Common.Interfaces.MediatR;
 using Contracts.Domains.Entity;
+using Contracts.Domains.Interfaces;
 
 namespace Contracts.Domains.EventsEntity;
 

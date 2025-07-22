@@ -3,11 +3,11 @@ using Inventory.Product.Presentation.Grpc.Protos;
 
 namespace Basket.Infrastructure.Grpc.Clients;
 
-public class GetInventoryEntryGrpcClientService : IInventoryEntryService
+public class InventoryEntryGrpcClient : IInventoryEntryService
 {
     private readonly InventoryEntryProtoService.InventoryEntryProtoServiceClient _inventoryEntryProtoServiceClient;
 
-    public GetInventoryEntryGrpcClientService(InventoryEntryProtoService.InventoryEntryProtoServiceClient inventoryEntryProtoServiceClient)
+    public InventoryEntryGrpcClient(InventoryEntryProtoService.InventoryEntryProtoServiceClient inventoryEntryProtoServiceClient)
     {
         _inventoryEntryProtoServiceClient = inventoryEntryProtoServiceClient;
     }

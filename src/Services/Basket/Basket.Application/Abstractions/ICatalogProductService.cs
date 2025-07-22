@@ -1,8 +1,8 @@
-using Shared.InfrastructureServiceModels.GetListCatalogProductsByIdModel;
+using Shared.InfrastructureGrpcModels.GetListCatalogProductsByIdModel;
 
 namespace Basket.Application.Abstractions;
 
 public interface ICatalogProductService
 {
-    Task<List<GetListCatalogProductsByIdResponse>> GetListCatalogProductsByIdAsync(GetListCatalogProductsByIdRequest byIdRequest);
+    Task<List<GetListCatalogProductsByIdGrpcBaseResponse>> GetListCatalogProductsByIdAsync(GetListCatalogProductsByIdGrpcBaseRequest byIdGrpcBaseRequest);
 }

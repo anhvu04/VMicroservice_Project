@@ -1,43 +1,82 @@
-using System.Text.Json;
+using Basket.Application.Abstractions;
 using Basket.Application.Common;
+using Basket.Domain.DomainErrors;
 using Basket.Domain.GenericRepository;
-using Contracts.Common.Interfaces.MediatR;
+using Shared.InfrastructureGrpcModels.CartNotification;
+using Shared.MediatR;
 using Shared.Utils;
 
 namespace Basket.Application.Usecases.Cart.Command.RemoveCart;
 
 public class RemoveFromCartCommandHandler : ICommandHandler<RemoveFromCartCommand>
 {
-    private readonly IBasketRepository _basketRepository;
+    private readonly ICartRepository _cartRepository;
+    private readonly CartUtils _cartUtils;
 
-    public RemoveFromCartCommandHandler(IBasketRepository basketRepository)
+    public RemoveFromCartCommandHandler(ICartRepository cartRepository, CartUtils cartUtils)
     {
-        _basketRepository = basketRepository;
+        _cartRepository = cartRepository;
+        _cartUtils = cartUtils;
     }
 
     public async Task<Result> Handle(RemoveFromCartCommand request, CancellationToken cancellationToken)
     {
-        var cartKey = Utils.GetCartKey(request.UserId);
-        var cart = await _basketRepository.GetDataByKeyAsync(request.UserId.ToString());
-        if (string.IsNullOrEmpty(cart))
+        try
         {
-            return Result.Failure("Cart is empty");
-        }
+            var cartKey = _cartUtils.GetCartKey(request.UserId);
+            var cart = await _cartRepository.GetCartAsync(cartKey);
+            if (!cart.IsSuccess)
+            {
+                return Result.Failure(cart.Error!);
+            }
 
-        var cartItem = JsonSerializer.Deserialize<Domain.Entities.Cart>(cart);
-        if (cartItem == null)
+            var product = cart.Value!.Items.FirstOrDefault(x => x.ProductId == request.ProductId);
+            if (product == null)
+            {
+                return Result.Failure("Product not found");
+            }
+
+            var remainQuantity = product.Quantity - request.Quantity;
+            if (remainQuantity <= 0)
+            {
+                cart.Value.Items.Remove(product);
+
+                // If cart is empty, delete cart
+                if (cart.Value.Items.Count == 0)
+                {
+                    // Call grpc (schedule service) to delete cart notification job
+                    await _cartUtils.ScheduledJobAsync(cart.Value);
+
+                    var deleteCartResult = await _cartRepository.DeleteCartAsync(cartKey);
+                    if (!deleteCartResult.IsSuccess)
+                    {
+                        return Result.Failure(CartErrors.ErrorRemovingCart);
+                    }
+
+                    return Result.Success();
+                }
+            }
+            else
+            {
+                product.Quantity = remainQuantity;
+            }
+
+            // Call grpc (schedule service) to set cart notification job
+            var jobId = await _cartUtils.ScheduledJobAsync(cart.Value);
+            cart.Value.JobId = string.IsNullOrEmpty(jobId) ? null : jobId;
+
+            var saveCartResult = await _cartRepository.SaveCartAsync(cartKey, cart.Value);
+            if (!saveCartResult.IsSuccess)
+            {
+                return Result.Failure(CartErrors.ErrorRemovingCart);
+            }
+
+            return Result.Success();
+        }
+        catch (Exception e)
         {
-            return Result.Failure("Cart is null");
+            Console.WriteLine(e);
+            return Result.Failure(CartErrors.ErrorRemovingCart);
         }
-
-        var product = cartItem.Items.FirstOrDefault(x => x.ProductId == request.ProductId);
-        if (product == null)
-        {
-            return Result.Failure("Product not found");
-        }
-
-        cartItem.Items.Remove(product);
-        await _basketRepository.SetDataAsync(cartKey, cartItem, TimeSpan.FromDays(180));
-        return Result.Success();
     }
 }

@@ -1,29 +1,30 @@
 using Basket.Application.Abstractions;
 using Product.Presentation.Grpc.Protos;
-using Shared.InfrastructureServiceModels.GetListCatalogProductsByIdModel;
+using Shared.InfrastructureGrpcModels.GetListCatalogProductsByIdModel;
+using Shared.Utils.Errors;
 
 namespace Basket.Infrastructure.Grpc.Clients;
 
-public class GetListProductsGrpcClientService : ICatalogProductService
+public class ListProductsGrpcClient : ICatalogProductService
 {
     private readonly ProductProtoService.ProductProtoServiceClient _productProtoServiceClient;
 
-    public GetListProductsGrpcClientService(ProductProtoService.ProductProtoServiceClient productProtoServiceClient)
+    public ListProductsGrpcClient(ProductProtoService.ProductProtoServiceClient productProtoServiceClient)
     {
         _productProtoServiceClient = productProtoServiceClient;
     }
 
-    public async Task<List<GetListCatalogProductsByIdResponse>> GetListCatalogProductsByIdAsync(
-        GetListCatalogProductsByIdRequest byIdRequest)
+    public async Task<List<GetListCatalogProductsByIdGrpcBaseResponse>> GetListCatalogProductsByIdAsync(
+        GetListCatalogProductsByIdGrpcBaseRequest byIdGrpcBaseRequest)
     {
         try
         {
             var response = await _productProtoServiceClient.GetListProductsAsync(new GetListProductsRequest
             {
-                Ids = { byIdRequest.Ids.Select(x => x.ToString()) }
+                Ids = { byIdGrpcBaseRequest.Ids.Select(x => x.ToString()) }
             });
 
-            return response.Products.Select(x => new GetListCatalogProductsByIdResponse()
+            return response.Products.Select(x => new GetListCatalogProductsByIdGrpcBaseResponse()
             {
                 Id = Guid.Parse(x.Id),
                 Name = x.Name,
@@ -34,7 +35,7 @@ public class GetListProductsGrpcClientService : ICatalogProductService
         }
         catch (Exception e)
         {
-            throw new Exception(e.Message);
+            throw new Exception(GrpcCalledError.BasketClientError.GetListCatalogProductsError, e);
         }
     }
 }

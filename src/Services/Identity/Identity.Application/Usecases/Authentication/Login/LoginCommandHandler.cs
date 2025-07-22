@@ -1,7 +1,7 @@
-using Contracts.Common.Interfaces.MediatR;
 using Identity.Domain.Abstractions;
 using Identity.Domain.DomainErrors;
 using Identity.Domain.UnitOfWork;
+using Shared.MediatR;
 using Shared.Utils;
 
 namespace Identity.Application.Usecases.Authentication.Login;

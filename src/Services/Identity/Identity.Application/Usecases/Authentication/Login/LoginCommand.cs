@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Contracts.Common.Interfaces.MediatR;
+using Shared.MediatR;
 
 namespace Identity.Application.Usecases.Authentication.Login;
 

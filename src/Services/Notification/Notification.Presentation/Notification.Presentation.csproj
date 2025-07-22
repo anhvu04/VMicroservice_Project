@@ -4,10 +4,20 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>f92677a7-5b01-4dc6-8866-88e50d680999</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\BuildingBlocks\Common.Logging\Common.Logging.csproj" />
+      <ProjectReference Include="..\..\..\BuildingBlocks\Infrastructure\Infrastructure.csproj" />
+      <ProjectReference Include="..\Notification.Application\Notification.Application.csproj" />
+      <ProjectReference Include="..\Notification.Domain\Notification.Domain.csproj" />
+      <ProjectReference Include="..\Notification.Infrastructure\Notification.Infrastructure.csproj" />
+      <ProjectReference Include="..\Notification.Persistence\Notification.Persistence.csproj" />
     </ItemGroup>
 
     <ItemGroup>

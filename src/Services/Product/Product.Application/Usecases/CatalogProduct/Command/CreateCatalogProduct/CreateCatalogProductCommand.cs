@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Contracts.Common.Interfaces.MediatR;
 using Product.Application.Usecases.CatalogProduct.Common;
+using Shared.MediatR;
 
 namespace Product.Application.Usecases.CatalogProduct.Command.CreateCatalogProduct;
 

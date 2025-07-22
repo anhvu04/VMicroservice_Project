@@ -1,7 +1,7 @@
-using Contracts.Common.Interfaces.MediatR;
 using MapsterMapper;
 using Ordering.Application.Usecases.Order.Common;
 using Ordering.Domain.UnitOfWork;
+using Shared.MediatR;
 using Shared.Utils;
 
 namespace Ordering.Application.Usecases.Order.Query.GetOrder;

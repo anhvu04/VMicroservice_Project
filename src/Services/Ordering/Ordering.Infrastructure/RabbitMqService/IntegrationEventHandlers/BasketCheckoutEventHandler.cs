@@ -9,21 +9,21 @@ namespace Ordering.Infrastructure.RabbitMqService.IntegrationEventHandlers;
 
 public class BasketCheckoutEventHandler : IConsumer<BasketCheckoutEvent>
 {
-    private readonly IMediator _mediator;
     private readonly ILogger<BasketCheckoutEventHandler> _logger;
     private readonly IMapper _mapper;
+    private readonly ISender _sender;
 
-    public BasketCheckoutEventHandler(IMediator mediator, ILogger<BasketCheckoutEventHandler> logger, IMapper mapper)
+    public BasketCheckoutEventHandler(ILogger<BasketCheckoutEventHandler> logger, IMapper mapper, ISender sender)
     {
-        _mediator = mediator;
         _logger = logger;
         _mapper = mapper;
+        _sender = sender;
     }
 
     public async Task Consume(ConsumeContext<BasketCheckoutEvent> context)
     {
         _logger.LogInformation($"BasketCheckoutEventHandler consumed: {context.Message}");
         var req = _mapper.Map<CreateOrderCommand>(context.Message);
-        await _mediator.Send(req);
+        await _sender.Send(req);
     }
 }

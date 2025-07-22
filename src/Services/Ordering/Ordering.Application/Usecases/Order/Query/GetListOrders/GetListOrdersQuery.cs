@@ -1,5 +1,5 @@
-using Contracts.Common.Interfaces.MediatR;
 using Ordering.Application.Usecases.Order.Common;
+using Shared.MediatR;
 using Shared.Utils;
 using Shared.Utils.Params;
 

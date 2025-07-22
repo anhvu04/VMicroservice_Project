@@ -1,5 +1,5 @@
-using Contracts.Common.Interfaces.MediatR;
 using Ordering.Domain.UnitOfWork;
+using Shared.MediatR;
 using Shared.Utils;
 
 namespace Ordering.Application.Usecases.Order.Command.DeleteOrder;

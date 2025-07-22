@@ -14,9 +14,4 @@ public static class ServiceExtensions
         services.ConfigureCqrsMediatR(AssemblyReference.Assembly);
         services.ConfigureMapper();
     }
-
-    private static void ConfigureMapper(this IServiceCollection services)
-    {
-        services.AddScoped<IMapper, Mapper>();
-    }
 }

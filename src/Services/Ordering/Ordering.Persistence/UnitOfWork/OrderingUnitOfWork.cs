@@ -1,6 +1,6 @@
 using Contracts.Common.Interfaces;
-using Contracts.Common.Interfaces.MediatR;
 using Contracts.Domains.EventsEntity;
+using Contracts.Domains.Interfaces;
 using Infrastructure.Common.Implementation;
 using Infrastructure.Extensions.MediatorExtentions;
 using MediatR;

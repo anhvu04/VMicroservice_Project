@@ -1,5 +1,7 @@
 using Basket.Domain.GenericRepository;
 using Basket.Persistence.GenericRepository;
+using Contracts.Services.CacheService;
+using Infrastructure.Services.RedisService;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.ConfigurationSettings;
@@ -43,6 +45,7 @@ public static class ServiceExtensions
 
     private static void ConfigureDependencyInjection(this IServiceCollection service)
     {
-        service.AddSingleton<IBasketRepository, BasketRepository>();
+        service.AddSingleton<ICartRepository, CartRepository>();
+        service.AddSingleton<ICacheService, RedisService>();
     }
 }

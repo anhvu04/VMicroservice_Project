@@ -16,13 +16,8 @@ public static class ServiceExtensions
         services.ConfigureMapper();
         services.ConfigureCqrsMediatR(AssemblyReference.Assembly);
         services.ConfigureDependencyInjection();
+        services.ConfigureMapper();
     }
-
-    private static void ConfigureMapper(this IServiceCollection services)
-    {
-        services.AddScoped<IMapper, Mapper>();
-    }
-
     private static void ConfigureDependencyInjection(this IServiceCollection services)
     {
         services.AddScoped<CartUtils>();

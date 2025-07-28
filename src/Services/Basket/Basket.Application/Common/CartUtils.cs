@@ -1,45 +1,35 @@
-using System.Text.Json;
 using Basket.Application.Abstractions;
 using Basket.Application.Usecases.Cart.Common;
 using Basket.Domain.DomainErrors;
 using Basket.Domain.Entities;
 using Basket.Domain.GenericRepository;
-using Shared.InfrastructureServiceModels.GetListCatalogProductsByIdModel;
+using Microsoft.Extensions.Logging;
+using Shared.InfrastructureGrpcModels.CartNotification;
+using Shared.InfrastructureGrpcModels.GetListCatalogProductsByIdModel;
 using Shared.Utils;
 
 namespace Basket.Application.Common;
 
 public class CartUtils
 {
+    private const string Cart = "cart";
     private readonly ICatalogProductService _catalogProductService;
-    private readonly IBasketRepository _basketRepository;
+    private readonly ICartRepository _cartRepository;
+    private readonly ICartNotificationScheduleService _cartNotificationScheduleService;
+    private readonly ILogger<CartUtils> _logger;
 
-    public CartUtils(ICatalogProductService catalogProductService, IBasketRepository basketRepository)
+    public CartUtils(ICatalogProductService catalogProductService, ICartRepository cartRepository,
+        ICartNotificationScheduleService cartNotificationScheduleService, ILogger<CartUtils> logger)
     {
         _catalogProductService = catalogProductService;
-        _basketRepository = basketRepository;
+        _cartRepository = cartRepository;
+        _cartNotificationScheduleService = cartNotificationScheduleService;
+        _logger = logger;
     }
 
-    public async Task<Cart?> GetCartAsync(Guid userId)
+    public string GetCartKey(Guid userId)
     {
-        var cartKey = Utils.GetCartKey(userId);
-        var cartDeserialize = await _basketRepository.GetDataByKeyAsync(cartKey);
-        if (string.IsNullOrEmpty(cartDeserialize))
-        {
-            return null;
-        }
-
-        var cart = JsonSerializer.Deserialize<Cart>(cartDeserialize);
-        if (cart == null || cart.Items.Count == 0)
-        {
-            return null;
-        }
-
-        return new Cart
-        {
-            UserId = userId,
-            Items = cart.Items
-        };
+        return Cart + ":" + userId;
     }
 
     /// <summary>
@@ -49,125 +39,145 @@ public class CartUtils
     /// <returns></returns>
     public async Task<Result<GetCartResponse?>> EnrichGetCartAsync(Cart cart)
     {
-        try
+        var cartKey = GetCartKey(cart.UserId);
+        var productIds = cart.Items.Select(x => x.ProductId).ToList();
+        var products = await _catalogProductService.GetListCatalogProductsByIdAsync(
+            new GetListCatalogProductsByIdGrpcBaseRequest
+            {
+                Ids = productIds
+            });
+
+        if (!products.IsSuccess)
         {
-            var cartKey = Utils.GetCartKey(cart.UserId);
-            var productIds = cart.Items.Select(x => x.ProductId).ToList();
-            var products = await _catalogProductService.GetListCatalogProductsByIdAsync(
-                new GetListCatalogProductsByIdRequest
-                {
-                    Ids = productIds
-                });
+            _logger.LogError("Failed to get products: " + products.Error);
+            return Result.Failure<GetCartResponse?>(CartErrors.ErrorGettingProducts);
+        }
 
-            // If no products are found, return empty cart
-            if (products.Count == 0)
-            {
-                var emptyCart = new Cart
-                {
-                    UserId = cart.UserId,
-                    Items = []
-                };
-
-                // Update cart in Redis with empty cart
-                await _basketRepository.SetDataAsync(cartKey, emptyCart, TimeSpan.FromDays(180));
-
-                return new GetCartResponse
-                {
-                    UserId = cart.UserId,
-                    CartItems = []
-                };
-            }
-
-            var responseItems = new List<Items>();
-            var validCartItems = new List<CartItems>();
-
-            foreach (var item in products)
-            {
-                responseItems.Add(new Items
-                {
-                    ProductId = item.Id,
-                    ProductName = item.Name,
-                    ProductOriginalPrice = item.OriginalPrice,
-                    ProductSalePrice = item.SalePrice,
-                    Thumbnail = item.Thumbnail,
-                    Quantity = cart.Items.FirstOrDefault(x => x.ProductId == item.Id)?.Quantity ?? 0
-                });
-
-                validCartItems.Add(new CartItems
-                {
-                    ProductId = item.Id,
-                    Quantity = cart.Items.FirstOrDefault(x => x.ProductId == item.Id)?.Quantity ?? 0
-                });
-            }
-
-            // Update cart in Redis with only valid items
-            var updatedCart = new Cart
-            {
-                UserId = cart.UserId,
-                Items = validCartItems
-            };
-
-            await _basketRepository.SetDataAsync(cartKey, updatedCart, TimeSpan.FromDays(180));
-
+        // If no products are found, return empty cart
+        if (products.Value!.Count == 0)
+        {
             return new GetCartResponse
             {
                 UserId = cart.UserId,
-                CartItems = responseItems
+                CartItems = []
             };
         }
-        catch (Exception ex)
+
+        var responseItems = new List<Items>();
+        var validCartItems = new List<CartItems>();
+        var cartItemDict = cart.Items.ToDictionary(x => x.ProductId);
+
+        foreach (var item in products.Value)
         {
-            Console.WriteLine("Failed to enrich cart: " + ex.Message);
-            return Result.Failure<GetCartResponse?>(CartErrors.ErrorGettingCart);
+            cartItemDict.TryGetValue(item.Id, out var cartItem); // O(1)
+            var quantity = cartItem?.Quantity ?? 0;
+            responseItems.Add(new Items
+            {
+                ProductId = item.Id,
+                ProductName = item.Name,
+                ProductOriginalPrice = item.OriginalPrice,
+                ProductSalePrice = item.SalePrice,
+                Thumbnail = item.Thumbnail,
+                Quantity = quantity
+            });
+
+            validCartItems.Add(new CartItems
+            {
+                ProductId = item.Id,
+                Quantity = quantity
+            });
         }
+
+        // Update cart in Redis with only valid items
+        var updatedCart = new Cart
+        {
+            UserId = cart.UserId,
+            Items = validCartItems
+        };
+
+        var result = await _cartRepository.SaveCartAsync(cartKey, updatedCart);
+        if (!result.IsSuccess)
+        {
+            Console.WriteLine("Failed to update cart: " + result.Error);
+            return Result.Failure<GetCartResponse?>(CartErrors.ErrorUpdatingCart);
+        }
+
+        return new GetCartResponse
+        {
+            UserId = cart.UserId,
+            CartItems = responseItems
+        };
     }
 
     public async Task<Result<GetCartResponse?>> EnrichCheckoutCartAsync(Cart cart)
     {
-        try
+        var productIds = cart.Items.Select(x => x.ProductId).ToList();
+        var products = await _catalogProductService.GetListCatalogProductsByIdAsync(
+            new GetListCatalogProductsByIdGrpcBaseRequest
+            {
+                Ids = productIds
+            });
+
+        if (!products.IsSuccess)
         {
-            var productIds = cart.Items.Select(x => x.ProductId).ToList();
-            var products = await _catalogProductService.GetListCatalogProductsByIdAsync(
-                new GetListCatalogProductsByIdRequest
-                {
-                    Ids = productIds
-                });
+            _logger.LogError("Failed to get products: " + products.Error);
+            return Result.Failure<GetCartResponse?>(CartErrors.ErrorGettingProducts);
+        }
 
-            if (products.Count == 0 || products.Count != productIds.Count)
+        if (products.Value!.Count == 0 || products.Value.Count != productIds.Count)
+        {
+            return Result.Failure<GetCartResponse?>(CartErrors.CartIncludeInvalidItem);
+        }
+
+        var items = new List<Items>();
+        var cartItemDict = cart.Items.ToDictionary(x => x.ProductId);
+        foreach (var item in products.Value)
+        {
+            var isExistProduct = cartItemDict.ContainsKey(item.Id);
+            if (!isExistProduct)
             {
-                return Result.Failure<GetCartResponse?>("Cart includes items that are not available");
+                return Result.Failure<GetCartResponse?>(CartErrors.CartIncludeInvalidItem);
             }
 
-            var items = new List<Items>();
-            foreach (var item in cart.Items)
+            items.Add(new Items
             {
-                var product = products.FirstOrDefault(x => x.Id == item.ProductId);
-                if (product == null)
-                {
-                    return Result.Failure<GetCartResponse?>("Cart includes items that are not available");
-                }
+                ProductId = item.Id,
+                ProductName = item.Name,
+                ProductOriginalPrice = item.OriginalPrice,
+                ProductSalePrice = item.SalePrice,
+                Thumbnail = item.Thumbnail,
+                Quantity = cartItemDict[item.Id].Quantity
+            });
+        }
 
-                items.Add(new Items
-                {
-                    ProductId = product.Id,
-                    ProductName = product.Name,
-                    ProductOriginalPrice = product.OriginalPrice,
-                    ProductSalePrice = product.SalePrice,
-                    Thumbnail = product.Thumbnail,
-                    Quantity = item.Quantity,
-                });
-            }
+        return new GetCartResponse
+        {
+            UserId = cart.UserId,
+            CartItems = items
+        };
+    }
 
-            return new GetCartResponse
+    public async Task<string?> ScheduledJobAsync(Cart cart)
+    {
+        var result = await _cartNotificationScheduleService.SendCartNotificationScheduleAsync(
+            new SendCartNotificationScheduleGrpcBaseRequest
             {
                 UserId = cart.UserId,
-                CartItems = items
-            };
-        }
-        catch (Exception e)
+                Items = cart.Items.Select(x => new SendCartItemsNotificationScheduleGrpcBaseRequest
+                {
+                    ProductId = x.ProductId,
+                    Quantity = x.Quantity
+                }).ToList(),
+                LastModifiedDate = cart.LastModifiedDate,
+                JobId = cart.JobId ?? string.Empty
+            });
+
+        if (!result.IsSuccess)
         {
-            Console.WriteLine("Failed to enrich cart: " + e.Message);
-            return Result.Failure<GetCartResponse?>(CartErrors.ErrorGettingCart);
+            _logger.LogError("Failed to schedule cart notification: " + result.Error);
+            return null;
         }
+
+        return result.Value!.JobId;
     }
 }

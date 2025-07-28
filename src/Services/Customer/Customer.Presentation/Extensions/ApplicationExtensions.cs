@@ -1,6 +1,7 @@
 using Customer.Presentation.Controllers;
 using Customer.Persistence.Extensions;
 using Customer.Persistence.Persistence;
+using Customer.Presentation.Grpc.Servers;
 using Infrastructure.Middlewares;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,5 +20,6 @@ public static class ApplicationExtensions
         app.MapControllers();
         app.UseAuthorization();
         app.MigrateDatabase<CustomerContext>();
+        app.MapGrpcService<CustomerInfoGrpcServer>();
     }
 }

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 using Basket.Application.Usecases.Cart.Common;
-using Contracts.Common.Interfaces.MediatR;
+using Shared.MediatR;
 
 namespace Basket.Application.Usecases.Cart.Query.GetCart;
 

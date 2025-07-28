@@ -10,12 +10,7 @@ public static class ServiceExtensions
 {
     public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.ConfigureMapper();
         services.ConfigureCqrsMediatR(AssemblyReference.Assembly);
-    }
-
-    private static void ConfigureMapper(this IServiceCollection services)
-    {
-        services.AddScoped<IMapper, Mapper>();
+        services.ConfigureMapper();
     }
 }

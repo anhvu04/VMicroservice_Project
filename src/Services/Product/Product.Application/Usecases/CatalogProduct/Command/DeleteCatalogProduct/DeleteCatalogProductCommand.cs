@@ -1,4 +1,4 @@
-using Contracts.Common.Interfaces.MediatR;
+using Shared.MediatR;
 
 namespace Product.Application.Usecases.CatalogProduct.Command.DeleteCatalogProduct;
 

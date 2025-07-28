@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
-using Contracts.Common.Interfaces.MediatR;
 using Customer.Application.Usecases.CustomerSegment.Common;
 using Customer.Domain.UnitOfWork;
+using Shared.MediatR;
 using Shared.Utils;
 using Shared.Utils.Params;
 

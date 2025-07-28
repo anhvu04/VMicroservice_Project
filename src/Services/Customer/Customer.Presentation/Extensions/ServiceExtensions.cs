@@ -15,7 +15,8 @@ public static class ServiceExtensions
         builder.Services.AddApplication(builder.Configuration);
         builder.Services.AddInfrastructure(builder.Configuration);
         builder.Services.AddPersistence(builder.Configuration);
-        builder.ConfigureServices();    
+        builder.ConfigureGrpcServers();
+        builder.ConfigureServices();
     }
 
     private static void ConfigureServices(this WebApplicationBuilder builder)

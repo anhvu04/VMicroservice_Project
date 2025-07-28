@@ -1,7 +1,8 @@
 using Grpc.Core;
 using MediatR;
-using Product.Application.Usecases.CatalogProduct.Query.GetListCatalogProductsById;
+using Product.Application.Usecases.CatalogProduct.Query.GetListCatalogProductsByIdGrpc;
 using Product.Presentation.Grpc.Protos;
+using Shared.InfrastructureGrpcModels.GetListCatalogProductsByIdModel;
 
 namespace Product.Presentation.Grpc.Servers;
 
@@ -17,7 +18,7 @@ public class ProductGrpcServer : ProductProtoService.ProductProtoServiceBase
     public override async Task<GetListProductsResponse> GetListProducts(GetListProductsRequest request,
         ServerCallContext context)
     {
-        var query = new GetListCatalogProductsByIdQuery
+        var query = new GetListCatalogProductsByIdGrpcBaseRequest
         {
             Ids = request.Ids.Select(Guid.Parse).ToList()
         };

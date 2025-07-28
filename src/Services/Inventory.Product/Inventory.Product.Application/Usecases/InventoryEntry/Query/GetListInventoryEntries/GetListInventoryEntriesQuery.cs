@@ -1,5 +1,5 @@
-using Contracts.Common.Interfaces.MediatR;
 using Inventory.Product.Application.Usecases.InventoryEntry.Common;
+using Shared.MediatR;
 using Shared.Utils;
 using Shared.Utils.Params;
 

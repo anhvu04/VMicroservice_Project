@@ -1,18 +1,13 @@
-using Contracts.Common.Interfaces.MediatR;
-using Contracts.Services.MessageBusService;
 using Contracts.Services.ScheduledJobService;
-using EventBus.Messages.IntegrationEvent.Event;
-using EventBus.Messages.IntegrationEvent.Interface;
-using Microsoft.Extensions.Logging;
 using ScheduledJob.Application.Common.HangfireJob;
-using ScheduledJob.Application.Usecases.CartNotification.Common;
+using Shared.InfrastructureGrpcModels.CartNotification;
+using Shared.MediatR;
 using Shared.Utils;
 
 namespace ScheduledJob.Application.Usecases.CartNotification.SendCartNotification;
 
-public class
-    SendCartNotificationScheduleCommandHandler : ICommandHandler<SendCartNotificationScheduleCommand,
-    GetCartNotificationScheduleResponse>
+public class SendCartNotificationScheduleCommandHandler : ICommandHandler<SendCartNotificationScheduleGrpcBaseRequest,
+    SendCartNotificationScheduleGrpcBaseResponse>
 {
     private readonly IScheduledJobService _scheduledJobService;
     private readonly SendCartNotificationScheduleJob _sendCartNotificationScheduleJob;
@@ -24,13 +19,25 @@ public class
         _sendCartNotificationScheduleJob = sendCartNotificationScheduleJob;
     }
 
-    public Task<Result<GetCartNotificationScheduleResponse>> Handle(SendCartNotificationScheduleCommand request,
-        CancellationToken cancellationToken)
+    public Task<Result<SendCartNotificationScheduleGrpcBaseResponse>> Handle(
+        SendCartNotificationScheduleGrpcBaseRequest request, CancellationToken cancellationToken)
     {
-        var scheduleJob =
-            _scheduledJobService.Schedule(
+        // Delete old job
+        if (!string.IsNullOrEmpty(request.JobId))
+        {
+            _scheduledJobService.Delete(request.JobId);
+        }
+
+        var scheduleJobId = string.Empty;
+        // Schedule new job if there are any items
+        if (request.Items.Count != 0)
+        {
+            scheduleJobId = _scheduledJobService.Schedule(
                 () => _sendCartNotificationScheduleJob.SendCartNotificationScheduleEvent(request),
                 TimeSpan.FromSeconds(30));
-        return Task.FromResult(Result.Success(new GetCartNotificationScheduleResponse(scheduleJob)));
+            return Task.FromResult(Result.Success(new SendCartNotificationScheduleGrpcBaseResponse(scheduleJobId)));
+        }
+
+        return Task.FromResult(Result.Success(new SendCartNotificationScheduleGrpcBaseResponse(scheduleJobId)));
     }
 }

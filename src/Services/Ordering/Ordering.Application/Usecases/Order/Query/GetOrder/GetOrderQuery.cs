@@ -1,5 +1,5 @@
-using Contracts.Common.Interfaces.MediatR;
 using Ordering.Application.Usecases.Order.Common;
+using Shared.MediatR;
 
 namespace Ordering.Application.Usecases.Order.Query.GetOrder;
 

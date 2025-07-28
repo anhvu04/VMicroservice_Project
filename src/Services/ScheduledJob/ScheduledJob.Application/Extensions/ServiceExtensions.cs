@@ -10,14 +10,9 @@ public static class ServiceExtensions
 {
     public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.ConfigureMapper();
         services.ConfigureCqrsMediatR(AssemblyReference.Assembly);
+        services.ConfigureMapper();
         services.ConfigureHangfireJob();
-    }
-
-    private static void ConfigureMapper(this IServiceCollection services)
-    {
-        services.AddScoped<IMapper, Mapper>();
     }
 
     private static void ConfigureHangfireJob(this IServiceCollection services)

@@ -1,11 +1,7 @@
-using Contracts.Services.EmailService;
 using Infrastructure.ConfigurationService;
-using Infrastructure.Services.EmailService;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Ordering.Application.Extensions;
 using Ordering.Infrastructure.Extensions;
 using Ordering.Persistence.Extensions;
-using Shared.ConfigurationSettings;
 
 namespace Ordering.Presentation.Extensions;
 
@@ -27,6 +23,5 @@ public static class ServiceExtensions
         builder.ConfigureClaimsRequirement();
         builder.ConfigureJwtAuthentication();
         builder.ConfigureSwaggerAuth();
-        builder.ConfigureEmailService();
     }
 }

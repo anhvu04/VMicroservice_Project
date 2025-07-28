@@ -1,7 +1,7 @@
-using Contracts.Common.Interfaces.MediatR;
 using MapsterMapper;
 using Product.Application.Usecases.CatalogProduct.Common;
 using Product.Domain.UnitOfWork;
+using Shared.MediatR;
 using Shared.Utils;
 
 namespace Product.Application.Usecases.CatalogProduct.Query.GetCatalogProductById;

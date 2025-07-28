@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Contracts.Common.Interfaces.MediatR;
+using Shared.MediatR;
 
 namespace Basket.Application.Usecases.Checkout.Command;
 

@@ -1,5 +1,5 @@
-using Contracts.Common.Interfaces.MediatR;
 using Inventory.Product.Application.Usecases.InventoryEntry.Common;
+using Shared.MediatR;
 
 namespace Inventory.Product.Application.Usecases.InventoryEntry.Query.GetInventoryEntryById;
 

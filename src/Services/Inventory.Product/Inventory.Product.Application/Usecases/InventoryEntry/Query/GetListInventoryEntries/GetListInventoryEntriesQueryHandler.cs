@@ -1,9 +1,9 @@
 using System.Linq.Expressions;
-using Contracts.Common.Interfaces.MediatR;
 using Inventory.Product.Application.Usecases.InventoryEntry.Common;
 using Inventory.Product.Domain.GenericRepository;
 using MapsterMapper;
 using MongoDB.Driver;
+using Shared.MediatR;
 using Shared.Utils;
 
 namespace Inventory.Product.Application.Usecases.InventoryEntry.Query.GetListInventoryEntries;

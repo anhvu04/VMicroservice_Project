@@ -25,39 +25,42 @@ public class SendCartNotificationCommandHandler : ICommandHandler<SendCartNotifi
 
     public async Task<Result> Handle(SendCartNotificationCommand request, CancellationToken cancellationToken)
     {
-        try
+        // call grpc (identity) to get user information
+        var customerInfo = await _customerSegmentService.GetCustomerSegmentInfoAsync(request.UserId);
+        if (!customerInfo.IsSuccess)
         {
-            // call grpc (identity) to get user information
-            var customerInfo = await _customerSegmentService.GetCustomerSegmentInfoAsync(request.UserId);
+            return Result.Failure(customerInfo.Error!);
+        }
 
-            // call grpc to enrich cart information
-            var productIds = request.Items.Select(x => x.ProductId).ToList();
-            var products = await _catalogProductService.GetListCatalogProductsByIdAsync(
-                new GetListCatalogProductsByIdGrpcBaseRequest
-                {
-                    Ids = productIds
-                });
-
-            var enrichProduct = EnrichCatalogProducts(request.Items, products);
-
-            // replace with template engine
-            var emailBody = await EmailTemplateUtils.ProcessCartNotificationTemplateAsync(customerInfo, enrichProduct,
-                "",
-                cancellationToken);
-
-            var emailRequest = new SmtpEmailRequest
+        // call grpc to enrich cart information
+        var productIds = request.Items.Select(x => x.ProductId).ToList();
+        var products = await _catalogProductService.GetListCatalogProductsByIdAsync(
+            new GetListCatalogProductsByIdGrpcBaseRequest
             {
-                ToEmail = new ToEmail { To = customerInfo.Email },
-                Subject = "VMicroservice - Cart Notification",
-                Body = emailBody
-            };
-            await _emailService.SendMailAsync(emailRequest, cancellationToken);
-            return Result.Success();
-        }
-        catch (Exception e)
+                Ids = productIds
+            });
+
+        if (!products.IsSuccess)
         {
-            return Result.Failure(e.Message);
+            return Result.Failure(products.Error!);
         }
+
+        var enrichProduct = EnrichCatalogProducts(request.Items, products.Value!);
+
+        // replace with template engine
+        var emailBody = await EmailTemplateUtils.ProcessCartNotificationTemplateAsync(customerInfo.Value!,
+            enrichProduct,
+            "",
+            cancellationToken);
+
+        var emailRequest = new SmtpEmailRequest
+        {
+            ToEmail = new ToEmail { To = customerInfo.Value!.Email },
+            Subject = "VMicroservice - Cart Notification",
+            Body = emailBody
+        };
+        await _emailService.SendMailAsync(emailRequest, cancellationToken);
+        return Result.Success();
     }
 
     private List<CatalogProductItem> EnrichCatalogProducts(List<SendCartItemNotificationCommand> items,

@@ -1,9 +1,10 @@
 using Shared.InfrastructureGrpcModels.GetListCatalogProductsByIdModel;
+using Shared.Utils;
 
 namespace Notification.Application.Abstractions;
 
 public interface ICatalogProductService
 {
-    Task<List<GetListCatalogProductsByIdGrpcBaseResponse>> GetListCatalogProductsByIdAsync(
+    Task<Result<List<GetListCatalogProductsByIdGrpcBaseResponse>>> GetListCatalogProductsByIdAsync(
         GetListCatalogProductsByIdGrpcBaseRequest byIdGrpcBaseRequest);
 }

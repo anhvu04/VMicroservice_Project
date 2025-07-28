@@ -1,6 +1,8 @@
 using Identity.Presentation.Grpc.Protos;
+using Microsoft.Extensions.Logging;
 using Notification.Application.Abstractions;
 using Shared.InfrastructureGrpcModels.CustomerSegmentInfo;
+using Shared.Utils;
 using Shared.Utils.Errors;
 
 namespace Notification.Infrastructure.Grpc.Clients;
@@ -8,14 +10,17 @@ namespace Notification.Infrastructure.Grpc.Clients;
 public class CustomerInfoGrpcClient : ICustomerSegmentService
 {
     private readonly CustomerInfoProtoService.CustomerInfoProtoServiceClient _customerInfoProtoServiceClient;
+    private readonly ILogger<CustomerInfoGrpcClient> _logger;
 
     public CustomerInfoGrpcClient(
-        CustomerInfoProtoService.CustomerInfoProtoServiceClient customerInfoProtoServiceClient)
+        CustomerInfoProtoService.CustomerInfoProtoServiceClient customerInfoProtoServiceClient,
+        ILogger<CustomerInfoGrpcClient> logger)
     {
         _customerInfoProtoServiceClient = customerInfoProtoServiceClient;
+        _logger = logger;
     }
 
-    public async Task<GetCustomerSegmentInfoGrpcBaseResponse> GetCustomerSegmentInfoAsync(Guid customerId)
+    public async Task<Result<GetCustomerSegmentInfoGrpcBaseResponse>> GetCustomerSegmentInfoAsync(Guid customerId)
     {
         try
         {
@@ -33,7 +38,9 @@ public class CustomerInfoGrpcClient : ICustomerSegmentService
         }
         catch (Exception e)
         {
-            throw new Exception(GrpcCalledError.NotificationClientError.GetCustomerInfoError, e);
+            _logger.LogError(e, GrpcCalledError.NotificationClientError.GetCustomerInfoError);
+            return Result.Failure<GetCustomerSegmentInfoGrpcBaseResponse>(GrpcCalledError.NotificationClientError
+                .GetCustomerInfoError);
         }
     }
 }

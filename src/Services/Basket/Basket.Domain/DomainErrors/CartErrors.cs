@@ -10,4 +10,5 @@ public static class CartErrors
     public static readonly string ErrorUpdatingCart = "Error during updating cart. Please try again later.";
     public static readonly string ErrorRemovingCart = "Error during removing cart. Please try again later.";
     public static readonly string CartIncludeInvalidItem = "Cart includes items that are not available. Please remove them.";
+    public static readonly string ErrorGettingProducts = "Error during accessing products. Please try again later.";
 }
